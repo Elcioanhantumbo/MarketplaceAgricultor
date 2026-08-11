@@ -15,11 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call([
+            CategorySeeder::class,
+            LocationSeeder::class,
+        ]);
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Operador AgroLink',
+            'phone' => '+258840000000',
+            'email' => 'operador@agrolinkmz.co.mz',
+            'role' => 'operator',
         ]);
     }
 }

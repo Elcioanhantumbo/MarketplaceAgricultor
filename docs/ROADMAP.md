@@ -20,10 +20,17 @@ Cada fase só arranca depois da anterior estar fechada e validada. O estado é a
 - [x] Livewire e Tailwind 4/Vite instalados; `npm run build` e `artisan serve` verificados a funcionar.
 - [ ] **PostGIS** — adiado: sem build Windows disponível para PostgreSQL 18 (versão muito recente) no momento da instalação. O modelo de dados da secção 18.1 já usa `latitude`/`longitude` simples nas migrations, pelo que a Fase 3 arranca sem PostGIS; a extensão pode ser activada mais tarde (Fase 6 — pesquisa geográfica) quando houver build disponível, sem alterar o esquema base.
 
-## Fase 3 — Migrations, modelos e relacionamentos
+## Fase 3 — Migrations, modelos e relacionamentos ✅
 
 Tabelas da secção 18 do business plan, por ordem de dependência:
 `users` → `profiles` → `producers/buyers/transporters` → `farms` → `categories/products` → `product_listings` → `orders/order_items` → `order_status_history` → `deliveries` → `vehicles` → `transactions` → `payments` → `reviews` → `complaints` → `notifications` → `audit_logs` → `locations`.
+
+- [x] 21 migrations criadas e a correr (`php artisan migrate:fresh --seed`).
+- [x] `users` com `phone` único + `phone_verified_at` (RN01), `role` e `status`.
+- [x] Restrições de integridade ao nível da base de dados: `product_listings.quantity >= 0` (RN04), `reviews.rating` entre 1–5 (RN13), `reviews` único por `(order_id, reviewer_id)`, `payments.provider_reference` único (RN26).
+- [x] Models Eloquent com relacionamentos (User, Profile, Producer, Buyer, Transporter, Farm, Category, Product, ProductListing, Order, OrderItem, OrderStatusHistory, Delivery, Vehicle, Transaction, Payment, Review, Complaint, NotificationLog, AuditLog, Location).
+- [x] Seeders piloto: 3 categorias/7 produtos de referência e as 3 localizações do corredor (Dondo, Nhamatanda, Beira) — secção 24.
+- [ ] Reserva atómica com bloqueio de linha (RN06/RN15) — fica para a Fase 7, junto com a lógica de pedidos.
 
 ## Fase 4 — Autenticação, papéis e OTP por SMS (RN01)
 
