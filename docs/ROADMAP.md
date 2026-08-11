@@ -4,22 +4,21 @@ Este roteiro segue a "Ordem Recomendada de Desenvolvimento" (secção 26) e o "R
 
 Cada fase só arranca depois da anterior estar fechada e validada. O estado é actualizado à medida que avançamos.
 
-## Fase 1 — Repositório e estrutura do projecto ✅ (em curso)
+## Fase 1 — Repositório e estrutura do projecto ✅
 
 - [x] Documentação do negócio (`docs/business-plan.md`).
 - [x] Roteiro de desenvolvimento (este ficheiro).
 - [x] Estrutura de pastas Laravel (app, database, resources, routes, tests…).
 - [x] Ficheiros de configuração base (`composer.json`, `package.json`, `.env.example`, `.gitignore`).
-- [ ] Ambiente local funcional (PHP, Composer, PostgreSQL + PostGIS instalados e `composer install` corrido).
+- [x] Ambiente local funcional (PHP, Composer, PostgreSQL instalados e `composer install` corrido).
 
-> Nesta fase não existe ainda código funcional — apenas esqueleto, configuração e documentação, para depois instalar as dependências reais com Composer/NPM.
+## Fase 2 — Base técnica: Laravel + PostgreSQL ✅
 
-## Fase 2 — Base técnica: Laravel + PostgreSQL/PostGIS
-
-- Instalar Laravel real via Composer sobre este esqueleto (ou `composer create-project` num directório limpo e fundir).
-- Configurar ligação PostgreSQL + extensão PostGIS.
-- Configurar ambiente `.env`, filas (queue), cache e sessões.
-- Configurar Livewire e Tailwind/Vite.
+- [x] Laravel 13 instalado sobre o esqueleto (via `composer create-project` num directório limpo, fundido no repositório).
+- [x] Ligação PostgreSQL configurada (`agrolink_mz`, utilizador dedicado `agrolink`).
+- [x] Ambiente `.env` configurado; filas, cache e sessões a usar o driver `database`.
+- [x] Livewire e Tailwind 4/Vite instalados; `npm run build` e `artisan serve` verificados a funcionar.
+- [ ] **PostGIS** — adiado: sem build Windows disponível para PostgreSQL 18 (versão muito recente) no momento da instalação. O modelo de dados da secção 18.1 já usa `latitude`/`longitude` simples nas migrations, pelo que a Fase 3 arranca sem PostGIS; a extensão pode ser activada mais tarde (Fase 6 — pesquisa geográfica) quando houver build disponível, sem alterar o esquema base.
 
 ## Fase 3 — Migrations, modelos e relacionamentos
 
