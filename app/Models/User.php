@@ -72,4 +72,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(OtpCode::class);
     }
+
+    /** RN02 — dados mínimos de perfil antes de publicar/operar. */
+    public function hasMinimumProfile(): bool
+    {
+        return filled($this->profile?->address);
+    }
 }

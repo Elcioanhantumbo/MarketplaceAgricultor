@@ -43,11 +43,13 @@ Tabelas da secção 18 do business plan, por ordem de dependência:
 - [x] Testes de funcionalidade (`tests/Feature/Auth/RegistrationOtpLoginTest.php`) cobrindo registo, OTP errado/correcto, conta bloqueada e login.
 - Transportador e administrador/operador não têm registo público (transportador participa de forma assistida no piloto; admin/operador são criados directamente na base de dados/painel administrativo — Fase 10).
 
-## Fase 5 — Perfis, categorias e produtos
+## Fase 5 — Perfis, categorias e produtos ✅
 
-- Perfil mínimo do produtor (RN02).
-- Categorias e produtos de referência.
-- Gestão de propriedades (`farms`) com localização.
+- [x] Edição de perfil (`/perfil`): nome, endereço/distrito/província, dados específicos de produtor (nome do negócio) ou comprador (nome do negócio + tipo).
+- [x] RN02 — `User::hasMinimumProfile()` / `Producer::isReadyToPublish()`; aviso no painel enquanto o produtor não tiver perfil + pelo menos uma propriedade.
+- [x] Gestão de propriedades (`/minhas-propriedades`): CRUD de `farms` (nome, endereço, distrito, província, latitude/longitude opcionais), restrito a produtores e ao dono de cada propriedade (`FarmPolicy` — RN14).
+- [x] Catálogo de categorias/produtos (`/categorias`), navegável publicamente.
+- [x] Testes de funcionalidade cobrindo perfil, RN02, CRUD de propriedades e autorização entre produtores.
 
 ## Fase 6 — Ofertas, pesquisa e filtros
 

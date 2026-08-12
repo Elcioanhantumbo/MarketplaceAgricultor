@@ -29,4 +29,10 @@ class Producer extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    /** RN02 — perfil mínimo completo e pelo menos uma propriedade registada. */
+    public function isReadyToPublish(): bool
+    {
+        return $this->user->hasMinimumProfile() && $this->farms()->exists();
+    }
 }

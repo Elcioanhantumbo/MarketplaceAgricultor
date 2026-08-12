@@ -13,15 +13,17 @@
             <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
                 <a href="{{ url('/') }}" class="text-lg font-semibold text-green-700">AgroLink MZ</a>
 
-                @auth
-                    <div class="flex items-center gap-3 text-sm">
+                <div class="flex items-center gap-4 text-sm">
+                    <a href="{{ route('categorias') }}" wire:navigate class="text-stone-600 hover:text-green-700">Categorias</a>
+
+                    @auth
                         <span class="text-stone-600">{{ auth()->user()->name }}</span>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="text-stone-500 hover:text-stone-800">Sair</button>
                         </form>
-                    </div>
-                @endauth
+                    @endauth
+                </div>
             </div>
         </header>
 
