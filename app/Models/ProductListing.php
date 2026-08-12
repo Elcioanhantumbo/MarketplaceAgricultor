@@ -52,4 +52,27 @@ class ProductListing extends Model
         return $query->where('status', 'disponivel')
             ->whereDate('available_until', '>=', now());
     }
+
+    /**
+     * Filtra por proximidade a um ponto (fórmula de Haversine), enquanto o
+     * PostGIS não está disponível para esta versão do PostgreSQL — ver
+     * docs/ROADMAP.md (Fase 2/6). Ofertas sem localização ficam de fora.
+     */
+    public function scopeNearby(Builder $query, float $lat, float $lng, float $radiusKm): Builder
+    {
+        $haversine = '6371 * acos(least(1, greatest(-1,
+            cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?))
+            + sin(radians(?)) * sin(radians(latitude))
+        )))';
+
+        // O filtro repete a expressão no WHERE (em vez de usar o alias do
+        // SELECT num HAVING) porque a subquery de contagem da paginação do
+        // Laravel perde a visibilidade de alias definidos via selectRaw.
+        return $query
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->whereRaw("({$haversine}) <= ?", [$lat, $lng, $lat, $radiusKm])
+            ->selectRaw("product_listings.*, ({$haversine}) as distance_km", [$lat, $lng, $lat])
+            ->orderByRaw("({$haversine})", [$lat, $lng, $lat]);
+    }
 }

@@ -6,6 +6,9 @@ use App\Livewire\Auth\VerifyOtp;
 use App\Livewire\Catalog\Browse as CatalogBrowse;
 use App\Livewire\Dashboard;
 use App\Livewire\Farms\Manage as ManageFarms;
+use App\Livewire\Listings\Manage as ManageListings;
+use App\Livewire\Listings\Search as SearchListings;
+use App\Livewire\Listings\Show as ShowListing;
 use App\Livewire\Profile\Edit as EditProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -15,7 +18,6 @@ use Illuminate\Support\Facades\Route;
 | Rotas Web — AgroLink MZ
 |--------------------------------------------------------------------------
 | A definir nas próximas fases (ver docs/ROADMAP.md):
-|   Fase 6  — ofertas, pesquisa
 |   Fase 7  — pedidos
 |   Fase 8  — entregas
 |   Fase 9  — pagamentos
@@ -27,6 +29,8 @@ Route::get('/', function () {
 });
 
 Route::get('/categorias', CatalogBrowse::class)->name('categorias');
+Route::get('/ofertas', SearchListings::class)->name('ofertas');
+Route::get('/ofertas/{listing}', ShowListing::class)->name('ofertas.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/registo', Register::class)->name('registo');
@@ -48,5 +52,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/painel', Dashboard::class)->name('painel');
         Route::get('/perfil', EditProfile::class)->name('perfil');
         Route::get('/minhas-propriedades', ManageFarms::class)->name('minhas-propriedades');
+        Route::get('/minhas-ofertas', ManageListings::class)->name('minhas-ofertas');
     });
 });

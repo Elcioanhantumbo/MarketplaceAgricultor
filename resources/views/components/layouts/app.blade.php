@@ -14,6 +14,7 @@
                 <a href="{{ url('/') }}" class="text-lg font-semibold text-green-700">AgroLink MZ</a>
 
                 <div class="flex items-center gap-4 text-sm">
+                    <a href="{{ route('ofertas') }}" wire:navigate class="text-stone-600 hover:text-green-700">Ofertas</a>
                     <a href="{{ route('categorias') }}" wire:navigate class="text-stone-600 hover:text-green-700">Categorias</a>
 
                     @auth

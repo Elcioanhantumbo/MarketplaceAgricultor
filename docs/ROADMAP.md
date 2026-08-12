@@ -51,10 +51,14 @@ Tabelas da secção 18 do business plan, por ordem de dependência:
 - [x] Catálogo de categorias/produtos (`/categorias`), navegável publicamente.
 - [x] Testes de funcionalidade cobrindo perfil, RN02, CRUD de propriedades e autorização entre produtores.
 
-## Fase 6 — Ofertas, pesquisa e filtros
+## Fase 6 — Ofertas, pesquisa e filtros ✅
 
-- CRUD de ofertas (`product_listings`) com estados (RN08, RN17).
-- Pesquisa e filtros por localização (PostGIS), quantidade, preço, disponibilidade.
+- [x] CRUD de ofertas (`/minhas-ofertas`): criar/editar (enquanto `disponivel`) e encerrar; produto do catálogo, propriedade opcional (define localização), quantidade, unidade, preço e período de disponibilidade. Restrito a produtores prontos a publicar (RN02) e ao dono de cada oferta (`ProductListingPolicy` — RN14).
+- [x] RN17 — comando `app:expire-product-listings` marca como `expirado` as ofertas fora do período, agendado diariamente (`routes/console.php`); a pesquisa também exclui expiradas em tempo real (`scopeAvailable`).
+- [x] Pesquisa pública (`/ofertas`) com filtros por categoria, preço mín./máx., quantidade mín. e proximidade a uma das localizações-piloto (raio configurável).
+- [x] Proximidade calculada por fórmula de Haversine sobre `latitude`/`longitude` simples — substituto do PostGIS enquanto não há build para a versão do PostgreSQL instalada (ver Fase 2).
+- [x] Detalhe público da oferta (`/ofertas/{listing}`) com dados do produtor (RN — "ver perfil do produtor", secção 11.2); pedido de compra fica para a Fase 7.
+- [x] Testes de funcionalidade: CRUD, autorização entre produtores, validação de quantidade (RN04), expiração automática e todos os filtros de pesquisa.
 
 ## Fase 7 — Pedidos, reserva e concorrência
 

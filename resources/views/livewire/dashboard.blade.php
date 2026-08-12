@@ -25,11 +25,13 @@
         <a href="{{ route('perfil') }}" wire:navigate class="rounded border border-stone-200 px-3 py-2 hover:border-green-600 hover:text-green-700">Editar perfil</a>
         @if ($user->role === 'producer')
             <a href="{{ route('minhas-propriedades') }}" wire:navigate class="rounded border border-stone-200 px-3 py-2 hover:border-green-600 hover:text-green-700">Minhas propriedades</a>
+            <a href="{{ route('minhas-ofertas') }}" wire:navigate class="rounded border border-stone-200 px-3 py-2 hover:border-green-600 hover:text-green-700">Minhas ofertas</a>
         @endif
+        <a href="{{ route('ofertas') }}" wire:navigate class="rounded border border-stone-200 px-3 py-2 hover:border-green-600 hover:text-green-700">Pesquisar ofertas</a>
         <a href="{{ route('categorias') }}" wire:navigate class="rounded border border-stone-200 px-3 py-2 hover:border-green-600 hover:text-green-700">Categorias e produtos</a>
     </div>
 
     <div class="mt-6 rounded border border-dashed border-stone-300 p-4 text-sm text-stone-500">
-        As próximas fases (ofertas, pedidos…) vão preencher este painel.
+        As próximas fases (pedidos, entregas, pagamentos…) vão preencher este painel.
     </div>
 </x-layouts.app>

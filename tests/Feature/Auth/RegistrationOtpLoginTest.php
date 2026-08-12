@@ -95,6 +95,7 @@ class RegistrationOtpLoginTest extends TestCase
         $user = User::factory()->create([
             'phone' => '+258841234570',
             'password' => 'senha1234',
+            'role' => 'buyer',
             'status' => 'active',
             'phone_verified_at' => now(),
         ]);
