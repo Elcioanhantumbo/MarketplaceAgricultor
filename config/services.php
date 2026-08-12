@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    // Agregador de SMS local (secção 21 do business plan) — driver "log" por
+    // omissão enquanto o agregador não estiver escolhido/contratado.
+    'sms' => [
+        'driver' => env('SMS_GATEWAY_DRIVER', 'log'),
+        'base_url' => env('SMS_GATEWAY_BASE_URL'),
+        'api_key' => env('SMS_GATEWAY_API_KEY'),
+        'sender_id' => env('SMS_GATEWAY_SENDER_ID', 'AgroLinkMZ'),
+    ],
+
 ];

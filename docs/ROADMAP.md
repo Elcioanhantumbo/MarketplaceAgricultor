@@ -32,11 +32,16 @@ Tabelas da secção 18 do business plan, por ordem de dependência:
 - [x] Seeders piloto: 3 categorias/7 produtos de referência e as 3 localizações do corredor (Dondo, Nhamatanda, Beira) — secção 24.
 - [ ] Reserva atómica com bloqueio de linha (RN06/RN15) — fica para a Fase 7, junto com a lógica de pedidos.
 
-## Fase 4 — Autenticação, papéis e OTP por SMS (RN01)
+## Fase 4 — Autenticação, papéis e OTP por SMS (RN01) ✅
 
-- Registo/login com telefone único.
-- Verificação por OTP via agregador SMS local.
-- Papéis: produtor, comprador, transportador (Fase 2 de negócio), administrador/operador.
+- [x] Registo (produtor/comprador) com telefone único moçambicano normalizado (`App\Support\MozambiquePhone`).
+- [x] Verificação por OTP (`OtpService` + tabela `otp_codes`; código hasheado, expiração, limite de tentativas, cooldown de reenvio).
+- [x] Driver de SMS por interface (`App\Services\Sms\SmsGateway`), com `LogSmsGateway` por omissão enquanto o agregador local não está contratado (secção 21).
+- [x] Login por telefone/password (sessões Laravel); contas `blocked` são recusadas.
+- [x] Middleware `verified.phone` bloqueia o acesso à aplicação até o telefone estar confirmado.
+- [x] Painel (`/painel`) mínimo pós-login, a preencher nas próximas fases.
+- [x] Testes de funcionalidade (`tests/Feature/Auth/RegistrationOtpLoginTest.php`) cobrindo registo, OTP errado/correcto, conta bloqueada e login.
+- Transportador e administrador/operador não têm registo público (transportador participa de forma assistida no piloto; admin/operador são criados directamente na base de dados/painel administrativo — Fase 10).
 
 ## Fase 5 — Perfis, categorias e produtos
 
