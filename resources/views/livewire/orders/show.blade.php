@@ -1,11 +1,15 @@
 @php
     $isProducer = auth()->user()->id === $order->producer->user_id;
     $isBuyer = auth()->user()->id === $order->buyer_id;
+    $isAdmin = in_array(auth()->user()->role, ['admin', 'operator']);
     $item = $order->items->first();
+    $backRoute = $isAdmin && ! $isProducer && ! $isBuyer
+        ? route('admin.pedidos')
+        : ($isProducer ? route('pedidos-recebidos') : route('meus-pedidos'));
 @endphp
 
 <x-layouts.app title="Pedido #{{ $order->id }} — AgroLink MZ">
-    <a href="{{ $isProducer ? route('pedidos-recebidos') : route('meus-pedidos') }}" wire:navigate class="text-sm text-green-700 hover:underline">&larr; Voltar aos pedidos</a>
+    <a href="{{ $backRoute }}" wire:navigate class="text-sm text-green-700 hover:underline">&larr; Voltar aos pedidos</a>
 
     <div class="mt-4 flex items-center justify-between">
         <h1 class="text-lg font-semibold">Pedido #{{ $order->id }}</h1>
@@ -184,4 +188,37 @@
             @endforeach
         </ul>
     </div>
+
+    @if ($order->complaints->isNotEmpty() || (($isBuyer || $isProducer) && in_array($order->status, ['entregue', 'concluido'])))
+        @php
+            $complaintLabels = [
+                'aberta' => 'Aberta', 'em_analise' => 'Em análise', 'procedente' => 'Procedente',
+                'improcedente' => 'Improcedente', 'resolvida' => 'Resolvida',
+            ];
+        @endphp
+        <div class="mt-8">
+            <h2 class="mb-2 text-sm font-medium text-stone-500">Disputas</h2>
+
+            @foreach ($order->complaints as $complaint)
+                <div class="mb-2 rounded border border-stone-200 p-3 text-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium">{{ $complaintLabels[$complaint->status] }}</span>
+                        <span class="text-xs text-stone-400">{{ $complaint->created_at->format('d/m/Y') }}</span>
+                    </div>
+                    <p class="mt-1 text-stone-600">{{ $complaint->description }}</p>
+                    @if ($complaint->resolution)
+                        <p class="mt-2 border-t border-stone-100 pt-2 text-stone-500">Resolução: {{ $complaint->resolution }}</p>
+                    @endif
+                </div>
+            @endforeach
+
+            @if (($isBuyer || $isProducer) && in_array($order->status, ['entregue', 'concluido']))
+                <form wire:submit="reportComplaint" class="mt-2 space-y-2">
+                    <textarea wire:model="complaint_description" rows="3" placeholder="Descreva o problema…" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600"></textarea>
+                    @error('complaint_description') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+                    <button type="submit" class="rounded border border-stone-300 px-4 py-2 text-sm hover:border-red-500 hover:text-red-600">Reportar problema</button>
+                </form>
+            @endif
+        </div>
+    @endif
 </x-layouts.app>

@@ -7,10 +7,15 @@ use App\Models\User;
 
 class OrderPolicy
 {
-    /** RN14 — só o comprador ou o produtor envolvidos veem o pedido. */
+    /**
+     * RN14 — só o comprador ou o produtor envolvidos veem o pedido;
+     * administrador/operador têm acesso de supervisão (secção 11.3).
+     */
     public function view(User $user, Order $order): bool
     {
-        return $order->buyer_id === $user->id || $order->producer->user_id === $user->id;
+        return $order->buyer_id === $user->id
+            || $order->producer->user_id === $user->id
+            || in_array($user->role, ['admin', 'operator'], true);
     }
 
     public function create(User $user): bool
@@ -41,6 +46,12 @@ class OrderPolicy
      * partes; tanto o comprador como o produtor podem registá-lo.
      */
     public function managePayment(User $user, Order $order): bool
+    {
+        return $order->buyer_id === $user->id || $order->producer->user_id === $user->id;
+    }
+
+    /** RN12 — comprador ou produtor podem reportar um problema após a entrega. */
+    public function reportComplaint(User $user, Order $order): bool
     {
         return $order->buyer_id === $user->id || $order->producer->user_id === $user->id;
     }

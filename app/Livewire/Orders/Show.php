@@ -19,6 +19,8 @@ class Show extends Component
 
     public string $payment_reference = '';
 
+    public string $complaint_description = '';
+
     public function mount(Order $order): void
     {
         Gate::authorize('view', $order);
@@ -31,13 +33,14 @@ class Show extends Component
             'delivery.transporter',
             'payments',
             'transaction',
+            'complaints',
         ]);
     }
 
     private function refresh(): void
     {
         $this->order->refresh();
-        $this->order->load('statusHistory.changedBy', 'delivery.transporter', 'payments', 'transaction');
+        $this->order->load('statusHistory.changedBy', 'delivery.transporter', 'payments', 'transaction', 'complaints');
     }
 
     private function act(callable $action): void
@@ -98,6 +101,29 @@ class Show extends Component
         ]);
 
         $this->act(fn () => $paymentService->register($this->order, $this->payment_method, $this->payment_reference ?: null));
+    }
+
+    /** RN12 — só depois da entrega é que um problema pode ser tratado como disputa. */
+    public function reportComplaint(): void
+    {
+        Gate::authorize('reportComplaint', $this->order);
+
+        if (! in_array($this->order->status, ['entregue', 'concluido'], true)) {
+            $this->addError('complaint_description', 'Só é possível reportar um problema depois de o pedido ser entregue.');
+
+            return;
+        }
+
+        $this->validate(['complaint_description' => 'required|string|min:10|max:2000']);
+
+        $this->order->complaints()->create([
+            'raised_by' => Auth::id(),
+            'status' => 'aberta',
+            'description' => $this->complaint_description,
+        ]);
+
+        $this->complaint_description = '';
+        $this->refresh();
     }
 
     public function render()

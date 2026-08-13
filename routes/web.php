@@ -1,5 +1,12 @@
 <?php
 
+use App\Livewire\Admin\Categories as AdminCategories;
+use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\Disputes as AdminDisputes;
+use App\Livewire\Admin\Listings as AdminListings;
+use App\Livewire\Admin\Orders as AdminOrders;
+use App\Livewire\Admin\Users as AdminUsers;
+use App\Livewire\Admin\Verifications as AdminVerifications;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\VerifyOtp;
@@ -21,9 +28,6 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Rotas Web — AgroLink MZ
 |--------------------------------------------------------------------------
-| A definir nas próximas fases (ver docs/ROADMAP.md):
-|   Fase 9  — pagamentos
-|   Fase 10 — painel administrativo
 */
 
 Route::get('/', function () {
@@ -59,5 +63,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/pedidos-recebidos', ReceivedOrders::class)->name('pedidos-recebidos');
         Route::get('/pedidos/{order}', ShowOrder::class)->name('pedidos.show');
         Route::get('/entregas', ManageDeliveries::class)->name('entregas');
+
+        Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+            Route::get('/', AdminDashboard::class)->name('dashboard');
+            Route::get('/utilizadores', AdminUsers::class)->name('utilizadores');
+            Route::get('/verificacoes', AdminVerifications::class)->name('verificacoes');
+            Route::get('/categorias', AdminCategories::class)->name('categorias');
+            Route::get('/ofertas', AdminListings::class)->name('ofertas');
+            Route::get('/pedidos', AdminOrders::class)->name('pedidos');
+            Route::get('/disputas', AdminDisputes::class)->name('disputas');
+        });
     });
 });

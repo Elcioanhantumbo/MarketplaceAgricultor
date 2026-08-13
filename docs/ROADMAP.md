@@ -92,10 +92,20 @@ Tabelas da secção 18 do business plan, por ordem de dependência:
 
 > Nota de âmbito: RN23 (retenção/escrow) e RN25 completo (`retido`/`libertado`) ficam por automatizar — dependem da integração real com o agregador de mobile money (secção 17.3, Fase 3 de negócio, fora do MVP técnico). O esquema (`payments.held_at/released_at/refunded_at`) já está pronto para essa fase.
 
-## Fase 10 — Painel administrativo e de operador
+## Fase 10 — Painel administrativo e de operador ✅
 
-- KPIs, gestão de utilizadores/categorias/ofertas/pedidos.
-- Verificação de perfis (RN16), disputas (RN12, RN27), auditoria (RN30).
+- [x] `/admin` (KPIs, secção 23): ofertas publicadas, taxa de conclusão, taxa de entrega confirmada, valor transaccionado (GMV) e taxa de recompra. "Tempo até compra" e "retenção" ficam de fora — precisam de análise de coortes mais elaborada, não essencial ao MVP.
+- [x] `/admin/utilizadores`: listar/filtrar por papel e pesquisar; bloquear/desbloquear conta (não permite bloquear a própria).
+- [x] `/admin/verificacoes` (RN16): lista perfis com dados mínimos preenchidos ainda por verificar; acção de verificação atribui o selo.
+- [x] `/admin/categorias`: adicionar categorias e produtos de referência.
+- [x] `/admin/ofertas` e `/admin/pedidos`: supervisão só de leitura, com filtro por estado; `OrderPolicy::view` passou a permitir também administrador/operador ver o detalhe de qualquer pedido.
+- [x] Disputas (RN12/RN27): comprador ou produtor podem "Reportar problema" na página do pedido depois de `entregue`/`concluido`; `/admin/disputas` permite decidir (procedente/improcedente/resolvida) com justificação.
+- [x] Auditoria (RN30): `AuditLogger` regista bloqueio/desbloqueio de conta, verificação de perfil, criação de categoria/produto e resolução de disputa em `audit_logs`.
+- [x] Testes cobrindo autorização (incluindo defesa em profundidade ao nível do componente, não só da rota), bloqueio/desbloqueio, verificação, categorias e o ciclo completo de uma disputa.
+
+> Nota de âmbito: RN27 (reembolso em disputa procedente) fica registado como decisão administrativa (texto de resolução), sem automatizar a devolução de dinheiro — não há escrow real a reverter nesta fase (ver nota da Fase 9).
+
+Com esta fase fecha-se o **MVP técnico** (módulos 1–10 da secção 10 do business plan). As fases seguintes (11–14) são UI responsiva/PWA, mapa/avaliações/notificações, testes end-to-end e o piloto real.
 
 ## Fase 11 — UI responsiva leve e PWA opcional
 
