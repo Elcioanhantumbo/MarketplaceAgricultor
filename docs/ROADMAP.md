@@ -60,12 +60,15 @@ Tabelas da secção 18 do business plan, por ordem de dependência:
 - [x] Detalhe público da oferta (`/ofertas/{listing}`) com dados do produtor (RN — "ver perfil do produtor", secção 11.2); pedido de compra fica para a Fase 7.
 - [x] Testes de funcionalidade: CRUD, autorização entre produtores, validação de quantidade (RN04), expiração automática e todos os filtros de pesquisa.
 
-## Fase 7 — Pedidos, reserva e concorrência
+## Fase 7 — Pedidos, reserva e concorrência ✅
 
-- Criação de pedidos, validação de quantidade (RN05).
-- Reserva atómica com bloqueio de linha (RN06, RN15).
-- Estados do pedido e histórico de transições (RN09, RN10).
-- Regras de cancelamento (RN11).
+- [x] Criação de pedidos a partir da página da oferta (`/ofertas/{id}`), com validação da quantidade pedida contra a disponível (RN05) e escolha da forma de entrega (RN19).
+- [x] `OrderWorkflowService::accept()` — reserva atómica: bloqueia a linha da oferta (`lockForUpdate`), confirma stock suficiente e só então decrementa (RN06/RN15). A oferta mantém-se `disponivel` enquanto sobrar quantidade e só passa a `vendido` quando esgotar — permite vender a vários compradores (RN07). O estado `reservado` do enum (RN08) fica por usar nesta fase: nada no fluxo automático o justifica sem violar RN07; pode vir a ser usado manualmente numa fase futura.
+- [x] Estados do pedido (RN09) com máquina de estados explícita e histórico de transições — quem, de, para, quando (RN10): `pendente → aceite → em_preparação → pronto → em_transporte → entregue → concluído`, alternativas `pendente → rejeitado` e `pendente|aceite → cancelado`.
+- [x] Cancelamento (RN11): livre em `pendente`; em `aceite` também é permitido e repõe a quantidade reservada; a partir de `em_preparação` deixa de ser possível (fica para gestão de disputas — Fase 12/painel administrativo).
+- [x] `OrderPolicy` garante que só o comprador e o produtor de cada pedido o veem/gerem (RN14); confirmação de entrega (RN22) é exclusiva do comprador.
+- [x] `delivery_fee` fica a 0 nesta fase — a integração do custo de transporte (RN20) faz sentido quando a entrega for de facto coordenada, na Fase 8.
+- [x] Testes cobrindo RN05, reserva/concorrência (RN06/RN15), venda parcial (RN07), ciclo de estados completo (RN09/RN10), cancelamento em cada estado (RN11) e autorização (RN14).
 
 ## Fase 8 — Entrega e transporte
 

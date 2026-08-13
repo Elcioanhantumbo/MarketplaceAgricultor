@@ -4,8 +4,6 @@ Modelo de Negócio e Regras de Negócio — Versão 2.0 (Final)
 Sistema Web responsivo adaptado ao contexto moçambicano
 Plataforma B2B de comercialização agrícola — corredor Dondo/Nhamatanda — Beira
 
-> Nota: esta é a transcrição limpa (acentuação corrigida) do documento original fornecido pelo utilizador, mantida em `docs/` como referência viva do projecto.
-
 ## Nota de escopo e versão
 
 Esta é a versão consolidada e final do documento de estruturação do AgroLink MZ. Integra num único documento a estrutura do projecto, as melhorias recomendadas na revisão crítica e regras de negócio mais consistentes, com a stack tecnológica seleccionada para o contexto moçambicano e secções dedicadas à logística de transporte e aos pagamentos.
