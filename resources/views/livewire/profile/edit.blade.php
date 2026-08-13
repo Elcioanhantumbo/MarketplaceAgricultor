@@ -9,6 +9,26 @@
     @endif
 
     <form wire:submit="save" class="max-w-md space-y-4">
+        <div x-data="avatarUploader()" class="flex items-center gap-4">
+            <div class="relative h-16 w-16 shrink-0 overflow-hidden rounded-full bg-stone-100">
+                <template x-if="preview">
+                    <img :src="preview" class="h-full w-full object-cover" alt="">
+                </template>
+                @if ($avatar_path)
+                    <img x-show="!preview" src="{{ asset('storage/'.$avatar_path) }}" class="h-full w-full object-cover" alt="">
+                @endif
+                <div x-show="compressing" class="absolute inset-0 flex items-center justify-center bg-white/70 text-xs text-stone-500">…</div>
+            </div>
+            <div>
+                <label for="avatar-input" class="cursor-pointer rounded border border-stone-300 px-3 py-1.5 text-sm hover:border-green-600 hover:text-green-700">
+                    Alterar foto
+                </label>
+                <input id="avatar-input" type="file" accept="image/*" @change="handleFile" class="hidden">
+                <p class="mt-1 text-xs text-stone-400">Comprimida automaticamente antes do envio.</p>
+                @error('avatar') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            </div>
+        </div>
+
         <div>
             <label class="block text-sm font-medium" for="name">Nome</label>
             <input wire:model="name" id="name" type="text" class="mt-1 w-full rounded border-stone-300 focus:border-green-600 focus:ring-green-600">

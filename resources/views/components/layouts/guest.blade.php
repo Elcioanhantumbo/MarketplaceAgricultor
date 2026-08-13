@@ -3,6 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#15803d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <title>{{ $title ?? 'AgroLink MZ' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles

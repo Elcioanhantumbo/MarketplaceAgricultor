@@ -107,10 +107,17 @@ Tabelas da secção 18 do business plan, por ordem de dependência:
 
 Com esta fase fecha-se o **MVP técnico** (módulos 1–10 da secção 10 do business plan). As fases seguintes (11–14) são UI responsiva/PWA, mapa/avaliações/notificações, testes end-to-end e o piloto real.
 
-## Fase 11 — UI responsiva leve e PWA opcional
+## Fase 11 — UI responsiva leve e PWA opcional ✅
 
-- Layout mobile-first, formulários curtos, upload de fotos com compressão.
-- PWA opcional para instalação no ecrã inicial.
+- [x] Página inicial (`/`) substituída — ainda usava o scaffold genérico do Laravel (referenciava até uma rota `/dashboard` inexistente); agora tem a marca AgroLink MZ, proposta de valor e chamadas para acção.
+- [x] Upload de foto de perfil com **compressão no navegador** (canvas, redimensiona para 800px e reexporta em JPEG antes do envio) — secção 19.
+- [x] Botão "Usar a minha localização" nas propriedades, via GPS do dispositivo (`navigator.geolocation`), mediante permissão — secção 19.
+- [x] Tabelas do painel administrativo substituídas por listas/cartões — mais legíveis em ecrãs pequenos do que tabelas largas.
+- [x] Menu compacto (hamburger) no cabeçalho em ecrãs pequenos, com Alpine.js.
+- [x] PWA opcional: `manifest.json`, ícones, `theme-color`, e um service worker mínimo que só põe em cache os ficheiros estáticos compilados (nomes com hash) — páginas, formulários e chamadas Livewire vão sempre à rede, para não servir versões antigas de operações críticas (secção 20).
+- [x] Testes cobrindo o upload de foto (incluindo substituição do ficheiro antigo e validação de tipo).
+
+> Nota de âmbito: o service worker cobre só o "app shell" estático. Cache mais profunda de dados haveria de respeitar a secção 20 ("operações críticas... sempre sincronizadas com o servidor antes de serem consideradas definitivas") — decidiu-se não fazê-lo agora para não arriscar mostrar dados desactualizados (stock, estado de pedidos) offline.
 
 ## Fase 12 — Mapa, avaliações e notificações
 

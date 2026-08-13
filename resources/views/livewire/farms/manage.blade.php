@@ -27,17 +27,37 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-medium" for="latitude">Latitude (opcional)</label>
-                <input wire:model="latitude" id="latitude" type="text" placeholder="-19.6103" class="mt-1 w-full rounded border-stone-300 focus:border-green-600 focus:ring-green-600">
-                @error('latitude') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+        <div x-data="{ locating: false, error: null }">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium" for="latitude">Latitude (opcional)</label>
+                    <input wire:model="latitude" id="latitude" type="text" placeholder="-19.6103" class="mt-1 w-full rounded border-stone-300 focus:border-green-600 focus:ring-green-600">
+                    @error('latitude') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label class="block text-sm font-medium" for="longitude">Longitude (opcional)</label>
+                    <input wire:model="longitude" id="longitude" type="text" placeholder="34.7425" class="mt-1 w-full rounded border-stone-300 focus:border-green-600 focus:ring-green-600">
+                    @error('longitude') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                </div>
             </div>
-            <div>
-                <label class="block text-sm font-medium" for="longitude">Longitude (opcional)</label>
-                <input wire:model="longitude" id="longitude" type="text" placeholder="34.7425" class="mt-1 w-full rounded border-stone-300 focus:border-green-600 focus:ring-green-600">
-                @error('longitude') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-            </div>
+            <button type="button"
+                    @click="
+                        if (!navigator.geolocation) { error = 'GPS não suportado neste dispositivo.'; return; }
+                        locating = true; error = null;
+                        navigator.geolocation.getCurrentPosition(
+                            (pos) => {
+                                $wire.set('latitude', pos.coords.latitude.toFixed(7));
+                                $wire.set('longitude', pos.coords.longitude.toFixed(7));
+                                locating = false;
+                            },
+                            () => { error = 'Não foi possível obter a localização.'; locating = false; },
+                        );
+                    "
+                    class="mt-2 text-sm text-green-700 hover:underline disabled:opacity-50" :disabled="locating">
+                <span x-show="!locating">📍 Usar a minha localização actual</span>
+                <span x-show="locating">A obter localização…</span>
+            </button>
+            <p x-show="error" x-text="error" class="mt-1 text-xs text-red-600"></p>
         </div>
 
         <div class="flex gap-2">

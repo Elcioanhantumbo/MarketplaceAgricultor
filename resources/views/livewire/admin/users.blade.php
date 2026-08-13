@@ -14,39 +14,25 @@
         </select>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b border-stone-200 text-left text-xs text-stone-500">
-                    <th class="py-2">Nome</th>
-                    <th class="py-2">Telefone</th>
-                    <th class="py-2">Papel</th>
-                    <th class="py-2">Estado</th>
-                    <th class="py-2"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
-                    <tr class="border-b border-stone-100">
-                        <td class="py-2">{{ $user->name }}</td>
-                        <td class="py-2">{{ $user->phone }}</td>
-                        <td class="py-2">{{ ucfirst($user->role) }}</td>
-                        <td class="py-2">
-                            <span class="rounded-full px-2 py-0.5 text-xs font-medium {{ $user->status === 'blocked' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-800' }}">
-                                {{ ucfirst($user->status) }}
-                            </span>
-                        </td>
-                        <td class="py-2 text-right">
-                            @if ($user->id !== auth()->id())
-                                <button wire:click="toggleBlocked({{ $user->id }})" wire:confirm="{{ $user->status === 'blocked' ? 'Desbloquear' : 'Bloquear' }} esta conta?" class="text-sm {{ $user->status === 'blocked' ? 'text-green-700' : 'text-red-600' }} hover:underline">
-                                    {{ $user->status === 'blocked' ? 'Desbloquear' : 'Bloquear' }}
-                                </button>
-                            @endif
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <div class="space-y-2">
+        @foreach ($users as $user)
+            <div class="flex items-center justify-between rounded border border-stone-200 p-3 text-sm">
+                <div>
+                    <p class="font-medium">{{ $user->name }}</p>
+                    <p class="text-stone-500">{{ $user->phone }} · {{ ucfirst($user->role) }}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="rounded-full px-2 py-0.5 text-xs font-medium {{ $user->status === 'blocked' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-800' }}">
+                        {{ ucfirst($user->status) }}
+                    </span>
+                    @if ($user->id !== auth()->id())
+                        <button wire:click="toggleBlocked({{ $user->id }})" wire:confirm="{{ $user->status === 'blocked' ? 'Desbloquear' : 'Bloquear' }} esta conta?" class="{{ $user->status === 'blocked' ? 'text-green-700' : 'text-red-600' }} hover:underline">
+                            {{ $user->status === 'blocked' ? 'Desbloquear' : 'Bloquear' }}
+                        </button>
+                    @endif
+                </div>
+            </div>
+        @endforeach
     </div>
 
     <div class="mt-4">{{ $users->links() }}</div>

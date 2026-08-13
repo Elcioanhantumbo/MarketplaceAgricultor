@@ -3,11 +3,19 @@
 namespace App\Livewire\Profile;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Edit extends Component
 {
+    use WithFileUploads;
+
     public string $name = '';
+
+    public $avatar = null;
+
+    public ?string $avatar_path = null;
 
     public string $business_name = '';
 
@@ -36,12 +44,14 @@ class Edit extends Component
         $this->address = $profile?->address ?? '';
         $this->district = $profile?->district ?? '';
         $this->province = $profile?->province ?? '';
+        $this->avatar_path = $profile?->avatar_path;
     }
 
     protected function rules(): array
     {
         return [
             'name' => 'required|string|max:255',
+            'avatar' => 'nullable|image|max:1024',
             'business_name' => 'nullable|string|max:255',
             'buyer_type' => 'nullable|in:restaurante,hotel,supermercado,grossista,agro_processador,instituicao',
             'bio' => 'nullable|string|max:1000',
@@ -49,6 +59,18 @@ class Edit extends Component
             'district' => 'nullable|string|max:255',
             'province' => 'nullable|string|max:255',
         ];
+    }
+
+    /** Secção 19 — foto de perfil, já comprimida no navegador antes do envio. */
+    public function updatedAvatar(): void
+    {
+        $this->validateOnly('avatar');
+
+        if ($this->avatar_path) {
+            Storage::disk('public')->delete($this->avatar_path);
+        }
+
+        $this->avatar_path = $this->avatar->store('avatars', 'public');
     }
 
     public function save(): void
@@ -59,6 +81,7 @@ class Edit extends Component
         $user->update(['name' => $this->name]);
 
         $user->profile()->updateOrCreate(['user_id' => $user->id], [
+            'avatar_path' => $this->avatar_path,
             'bio' => $this->bio,
             'address' => $this->address,
             'district' => $this->district,

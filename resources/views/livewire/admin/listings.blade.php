@@ -10,29 +10,19 @@
         <option value="expirado">Expirado</option>
     </select>
 
-    <div class="overflow-x-auto">
-        <table class="w-full text-sm">
-            <thead>
-                <tr class="border-b border-stone-200 text-left text-xs text-stone-500">
-                    <th class="py-2">Produto</th>
-                    <th class="py-2">Produtor</th>
-                    <th class="py-2">Quantidade</th>
-                    <th class="py-2">Preço</th>
-                    <th class="py-2">Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($listings as $listing)
-                    <tr class="border-b border-stone-100">
-                        <td class="py-2">{{ $listing->product->name }}</td>
-                        <td class="py-2">{{ $listing->producer->user->name }}</td>
-                        <td class="py-2">{{ $listing->quantity }} {{ $listing->unit }}</td>
-                        <td class="py-2">{{ number_format((float) $listing->price, 2) }} MZN</td>
-                        <td class="py-2">{{ ucfirst($listing->status) }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <div class="space-y-2">
+        @foreach ($listings as $listing)
+            <div class="rounded border border-stone-200 p-3 text-sm">
+                <div class="flex items-center justify-between">
+                    <p class="font-medium">{{ $listing->product->name }}</p>
+                    <span class="text-xs text-stone-500">{{ ucfirst($listing->status) }}</span>
+                </div>
+                <p class="mt-1 text-stone-500">
+                    {{ $listing->producer->user->name }} · {{ $listing->quantity }} {{ $listing->unit }}
+                    · {{ number_format((float) $listing->price, 2) }} MZN
+                </p>
+            </div>
+        @endforeach
     </div>
 
     <div class="mt-4">{{ $listings->links() }}</div>
