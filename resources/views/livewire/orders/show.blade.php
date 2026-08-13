@@ -47,6 +47,36 @@
         </dl>
     </div>
 
+    @if ($order->delivery)
+        @php
+            $deliveryLabels = [
+                'solicitada' => 'Solicitada', 'atribuida' => 'Atribuída', 'em_recolha' => 'Em recolha',
+                'em_transito' => 'Em trânsito', 'entregue' => 'Entregue', 'confirmada' => 'Confirmada',
+            ];
+        @endphp
+        <div class="mt-4 rounded border border-stone-200 p-6">
+            <h2 class="text-sm font-medium text-stone-500">Entrega (transporte intermediado)</h2>
+            <dl class="mt-2 grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <dt class="text-stone-500">Estado</dt>
+                    <dd class="font-medium">{{ $deliveryLabels[$order->delivery->status] }}</dd>
+                </div>
+                <div>
+                    <dt class="text-stone-500">Transportador</dt>
+                    <dd class="font-medium">{{ $order->delivery->transporter?->user->name ?? $order->delivery->transporter_contact ?? 'Por atribuir' }}</dd>
+                </div>
+                <div>
+                    <dt class="text-stone-500">Custo do transporte</dt>
+                    <dd class="font-medium">{{ $order->delivery->cost !== null ? number_format((float) $order->delivery->cost, 2) . ' MZN' : 'Por definir' }}</dd>
+                </div>
+                <div>
+                    <dt class="text-stone-500">Recolha prevista</dt>
+                    <dd class="font-medium">{{ $order->delivery->pickup_at?->format('d/m/Y H:i') ?? 'Por agendar' }}</dd>
+                </div>
+            </dl>
+        </div>
+    @endif
+
     <div class="mt-4 flex flex-wrap gap-2">
         @if ($isProducer && $order->status === 'pendente')
             <button wire:click="accept" wire:confirm="Aceitar este pedido? A quantidade será reservada." class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Aceitar</button>
@@ -69,7 +99,7 @@
         @if ($isBuyer && in_array($order->status, ['pendente', 'aceite']))
             <button wire:click="cancel" wire:confirm="Cancelar este pedido?" class="rounded border border-stone-300 px-4 py-2 text-sm hover:border-red-500 hover:text-red-600">Cancelar pedido</button>
         @endif
-        @if ($isBuyer && $order->status === 'entregue')
+        @if ($isBuyer && $order->status === 'entregue' && (! $order->delivery || $order->delivery->status === 'entregue'))
             <button wire:click="confirmDelivery" wire:confirm="Confirmar que recebeu a encomenda?" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Confirmar recepção</button>
         @endif
     </div>

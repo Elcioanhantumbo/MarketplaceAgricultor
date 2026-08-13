@@ -5,6 +5,7 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Auth\VerifyOtp;
 use App\Livewire\Catalog\Browse as CatalogBrowse;
 use App\Livewire\Dashboard;
+use App\Livewire\Deliveries\Manage as ManageDeliveries;
 use App\Livewire\Farms\Manage as ManageFarms;
 use App\Livewire\Listings\Manage as ManageListings;
 use App\Livewire\Listings\Search as SearchListings;
@@ -21,7 +22,6 @@ use Illuminate\Support\Facades\Route;
 | Rotas Web — AgroLink MZ
 |--------------------------------------------------------------------------
 | A definir nas próximas fases (ver docs/ROADMAP.md):
-|   Fase 8  — entregas
 |   Fase 9  — pagamentos
 |   Fase 10 — painel administrativo
 */
@@ -58,5 +58,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/meus-pedidos', MyOrders::class)->name('meus-pedidos');
         Route::get('/pedidos-recebidos', ReceivedOrders::class)->name('pedidos-recebidos');
         Route::get('/pedidos/{order}', ShowOrder::class)->name('pedidos.show');
+        Route::get('/entregas', ManageDeliveries::class)->name('entregas');
     });
 });

@@ -70,11 +70,16 @@ Tabelas da secção 18 do business plan, por ordem de dependência:
 - [x] `delivery_fee` fica a 0 nesta fase — a integração do custo de transporte (RN20) faz sentido quando a entrega for de facto coordenada, na Fase 8.
 - [x] Testes cobrindo RN05, reserva/concorrência (RN06/RN15), venda parcial (RN07), ciclo de estados completo (RN09/RN10), cancelamento em cada estado (RN11) e autorização (RN14).
 
-## Fase 8 — Entrega e transporte
+## Fase 8 — Entrega e transporte ✅
 
-- Registo de entregas (`deliveries`) e formas de entrega (RN19, RN20).
-- Estados da entrega (RN21) e confirmação (RN22).
-- Coordenação assistida (piloto) antes da atribuição automática (Fase 2 de negócio).
+- [x] Quando o pedido com `transporte_intermediado` é aceite, gera-se automaticamente o registo de entrega associado (origem a partir da propriedade do produtor — secção 16.2). Para `comprador_levanta`/`produtor_entrega` não há registo de entrega, tal como descrito na secção 16.1.
+- [x] `DeliveryWorkflowService::assign()` — o operador regista o transportador (conta formal opcional ou apenas contacto, para a coordenação assistida do piloto) e o custo acordado, que passa a integrar o total do pedido (RN20).
+- [x] Estados da entrega (RN21) com máquina de estados própria: `solicitada → atribuída → em_recolha → em_transito → entregue`, geridos pelo operador em `/entregas`.
+- [x] Confirmação (RN22): o botão "Confirmar recepção" do comprador (já existente na Fase 7) passa a confirmar também a entrega quando esta existe — exige que a entrega e o pedido estejam ambos `entregue`, marca a entrega como `confirmada` e conclui o pedido.
+- [x] `DeliveryPolicy`: gestão restrita a operador/administrador; consulta também permitida ao comprador e produtor do pedido.
+- [x] Testes cobrindo criação automática (ou não) da entrega, RN20, RN21, RN22 e autorização.
+
+> Nota de âmbito: sem coordenadas do comprador (`Profile` só tem endereço em texto), o destino da entrega fica sem `dest_lat/dest_lng` — o cálculo de distância fica para quando essa informação existir (não bloqueia o MVP).
 
 ## Fase 9 — Pagamentos e comissão
 

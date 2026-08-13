@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable([
-    'order_id', 'transporter_id', 'origin_lat', 'origin_lng', 'dest_lat', 'dest_lng',
+    'order_id', 'transporter_id', 'transporter_contact', 'origin_lat', 'origin_lng', 'dest_lat', 'dest_lng',
     'weight_estimate', 'cost', 'status', 'pickup_at', 'delivered_at',
 ])]
 class Delivery extends Model

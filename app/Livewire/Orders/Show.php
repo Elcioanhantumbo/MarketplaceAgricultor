@@ -4,6 +4,7 @@ namespace App\Livewire\Orders;
 
 use App\Exceptions\OrderWorkflowException;
 use App\Models\Order;
+use App\Services\DeliveryWorkflowService;
 use App\Services\OrderWorkflowService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -22,13 +23,14 @@ class Show extends Component
             'buyer',
             'producer.user',
             'statusHistory.changedBy',
+            'delivery.transporter',
         ]);
     }
 
     private function refresh(): void
     {
         $this->order->refresh();
-        $this->order->load('statusHistory.changedBy');
+        $this->order->load('statusHistory.changedBy', 'delivery.transporter');
     }
 
     private function act(callable $action): void
@@ -68,10 +70,15 @@ class Show extends Component
         $this->act(fn () => $workflow->advance($this->order, Auth::user(), $toStatus));
     }
 
-    public function confirmDelivery(OrderWorkflowService $workflow): void
+    public function confirmDelivery(OrderWorkflowService $workflow, DeliveryWorkflowService $deliveryWorkflow): void
     {
         Gate::authorize('confirmDelivery', $this->order);
-        $this->act(fn () => $workflow->advance($this->order, Auth::user(), 'concluido'));
+
+        if ($this->order->delivery) {
+            $this->act(fn () => $deliveryWorkflow->confirm($this->order->delivery, Auth::user(), $workflow));
+        } else {
+            $this->act(fn () => $workflow->advance($this->order, Auth::user(), 'concluido'));
+        }
     }
 
     public function render()

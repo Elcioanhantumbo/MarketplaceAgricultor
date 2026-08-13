@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\OrderWorkflowException;
+use App\Models\Delivery;
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
 use App\Models\ProductListing;
@@ -87,7 +88,27 @@ class OrderWorkflowService
             ]);
 
             $this->transition($order, 'aceite', $producer);
+            $this->createDeliveryIfIntermediated($order, $listing);
         });
+    }
+
+    /**
+     * RN19/RN21 — quando o comprador escolhe transporte intermediado, gera-se
+     * o registo de entrega associado ao pedido, pronto a ser atribuído pelo
+     * operador (coordenação assistida do piloto — secção 16.2).
+     */
+    private function createDeliveryIfIntermediated(Order $order, ProductListing $listing): void
+    {
+        if ($order->delivery_method !== 'transporte_intermediado') {
+            return;
+        }
+
+        Delivery::create([
+            'order_id' => $order->id,
+            'origin_lat' => $listing->farm?->latitude,
+            'origin_lng' => $listing->farm?->longitude,
+            'status' => 'solicitada',
+        ]);
     }
 
     public function reject(Order $order, User $producer): void
