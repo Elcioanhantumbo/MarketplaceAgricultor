@@ -35,4 +35,13 @@ class OrderPolicy
     {
         return $order->buyer_id === $user->id;
     }
+
+    /**
+     * RN14/17.2 — o pagamento do piloto é combinado directamente entre as
+     * partes; tanto o comprador como o produtor podem registá-lo.
+     */
+    public function managePayment(User $user, Order $order): bool
+    {
+        return $order->buyer_id === $user->id || $order->producer->user_id === $user->id;
+    }
 }

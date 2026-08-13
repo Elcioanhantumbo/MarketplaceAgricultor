@@ -7,6 +7,7 @@ use App\Models\Delivery;
 use App\Models\Order;
 use App\Models\OrderStatusHistory;
 use App\Models\ProductListing;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -158,6 +159,34 @@ class OrderWorkflowService
         $from = $order->status;
         $order->update(['status' => $to]);
         $this->recordHistory($order, $from, $to, $actor);
+
+        if ($to === 'concluido') {
+            $this->recordTransaction($order);
+        }
+    }
+
+    /**
+     * RN24/RN28 — ao concluir o pedido, regista-se a transação com a
+     * comissão da plataforma (percentagem configurável, referência 2%).
+     * Nesta fase (piloto, sem escrow integrado) é só o registo contabilístico
+     * — a libertação de valores automática fica para a Fase de integração
+     * de mobile money (secção 17.3).
+     */
+    private function recordTransaction(Order $order): void
+    {
+        $percent = config('commission.percent');
+        $amount = (float) $order->total_amount;
+        $commission = round($amount * $percent / 100, 2);
+
+        Transaction::updateOrCreate(
+            ['order_id' => $order->id],
+            [
+                'amount' => $amount,
+                'commission_percent' => $percent,
+                'commission_amount' => $commission,
+                'status' => 'concluida',
+            ],
+        );
     }
 
     private function recordHistory(Order $order, ?string $from, string $to, User $changedBy): void

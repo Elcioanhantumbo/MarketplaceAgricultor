@@ -77,6 +77,74 @@
         </div>
     @endif
 
+    @php $payment = $order->payments->first(); @endphp
+    @if (! in_array($order->status, ['pendente', 'rejeitado', 'cancelado']))
+        <div class="mt-4 rounded border border-stone-200 p-6">
+            <h2 class="text-sm font-medium text-stone-500">Pagamento</h2>
+
+            @if ($payment)
+                <dl class="mt-2 grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <dt class="text-stone-500">Estado</dt>
+                        <dd class="font-medium">{{ ucfirst($payment->status) }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-stone-500">Método</dt>
+                        <dd class="font-medium">{{ strtoupper($payment->method) }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-stone-500">Valor</dt>
+                        <dd class="font-medium">{{ number_format((float) $payment->amount, 2) }} MZN</dd>
+                    </div>
+                    <div>
+                        <dt class="text-stone-500">Referência</dt>
+                        <dd class="font-medium">{{ $payment->provider_reference ?: '—' }}</dd>
+                    </div>
+                </dl>
+            @else
+                <p class="mt-1 text-sm text-stone-500">
+                    Combine o pagamento directamente ({{ number_format((float) $order->total_amount, 2) }} MZN) e registe-o aqui.
+                </p>
+                <form wire:submit="registerPayment" class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div>
+                        <label class="block text-xs font-medium text-stone-500">Método</label>
+                        <select wire:model="payment_method" class="mt-1 w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
+                            <option value="mpesa">M-Pesa</option>
+                            <option value="emola">e-Mola</option>
+                            <option value="mkesh">mKesh</option>
+                            <option value="transferencia">Transferência bancária</option>
+                            <option value="dinheiro">Dinheiro</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-stone-500">Referência (opcional)</label>
+                        <input wire:model="payment_reference" type="text" class="mt-1 w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
+                        @error('payment_reference') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Registar pagamento</button>
+                    </div>
+                </form>
+            @endif
+        </div>
+    @endif
+
+    @if ($isProducer && $order->transaction)
+        <div class="mt-4 rounded border border-stone-200 p-6">
+            <h2 class="text-sm font-medium text-stone-500">Comissão da plataforma</h2>
+            <dl class="mt-2 grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <dt class="text-stone-500">Comissão ({{ rtrim(rtrim(number_format($order->transaction->commission_percent, 2), '0'), '.') }}%)</dt>
+                    <dd class="font-medium">{{ number_format((float) $order->transaction->commission_amount, 2) }} MZN</dd>
+                </div>
+                <div>
+                    <dt class="text-stone-500">Valor líquido a receber</dt>
+                    <dd class="font-medium">{{ number_format((float) $order->transaction->amount - (float) $order->transaction->commission_amount, 2) }} MZN</dd>
+                </div>
+            </dl>
+        </div>
+    @endif
+
     <div class="mt-4 flex flex-wrap gap-2">
         @if ($isProducer && $order->status === 'pendente')
             <button wire:click="accept" wire:confirm="Aceitar este pedido? A quantidade será reservada." class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Aceitar</button>

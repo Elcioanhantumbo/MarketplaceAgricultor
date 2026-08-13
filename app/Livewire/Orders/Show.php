@@ -6,6 +6,7 @@ use App\Exceptions\OrderWorkflowException;
 use App\Models\Order;
 use App\Services\DeliveryWorkflowService;
 use App\Services\OrderWorkflowService;
+use App\Services\PaymentService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
@@ -13,6 +14,10 @@ use Livewire\Component;
 class Show extends Component
 {
     public Order $order;
+
+    public string $payment_method = 'mpesa';
+
+    public string $payment_reference = '';
 
     public function mount(Order $order): void
     {
@@ -24,13 +29,15 @@ class Show extends Component
             'producer.user',
             'statusHistory.changedBy',
             'delivery.transporter',
+            'payments',
+            'transaction',
         ]);
     }
 
     private function refresh(): void
     {
         $this->order->refresh();
-        $this->order->load('statusHistory.changedBy', 'delivery.transporter');
+        $this->order->load('statusHistory.changedBy', 'delivery.transporter', 'payments', 'transaction');
     }
 
     private function act(callable $action): void
@@ -79,6 +86,18 @@ class Show extends Component
         } else {
             $this->act(fn () => $workflow->advance($this->order, Auth::user(), 'concluido'));
         }
+    }
+
+    public function registerPayment(PaymentService $paymentService): void
+    {
+        Gate::authorize('managePayment', $this->order);
+
+        $this->validate([
+            'payment_method' => 'required|in:mpesa,emola,mkesh,transferencia,dinheiro',
+            'payment_reference' => 'nullable|string|max:255',
+        ]);
+
+        $this->act(fn () => $paymentService->register($this->order, $this->payment_method, $this->payment_reference ?: null));
     }
 
     public function render()

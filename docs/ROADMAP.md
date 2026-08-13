@@ -81,11 +81,16 @@ Tabelas da secção 18 do business plan, por ordem de dependência:
 
 > Nota de âmbito: sem coordenadas do comprador (`Profile` só tem endereço em texto), o destino da entrega fica sem `dest_lat/dest_lng` — o cálculo de distância fica para quando essa informação existir (não bloqueia o MVP).
 
-## Fase 9 — Pagamentos e comissão
+## Fase 9 — Pagamentos e comissão ✅
 
-- Registo de pagamento (piloto, sem integração) — secção 17.2.
-- Estrutura pronta para escrow com mobile money (Fase 3 de negócio) — secção 17.3.
-- Estados do pagamento (RN25), idempotência (RN26), comissão configurável (RN28).
+- [x] `PaymentService::register()` — fase piloto (secção 17.2): comprador e produtor combinam o pagamento directamente (mobile money ou dinheiro) e qualquer um dos dois o regista na plataforma (método + referência opcional), só depois do pedido ser aceite.
+- [x] RN18 — o valor do pagamento é sempre recalculado no servidor a partir de `order.total_amount`, nunca aceite do cliente.
+- [x] RN26 — idempotência: registar de novo para o mesmo pedido actualiza o registo existente (`updateOrCreate` por `order_id`); reutilizar uma `provider_reference` de outro pedido é rejeitado (constrain único já existente desde a Fase 3).
+- [x] RN24/RN28 — ao concluir o pedido (`OrderWorkflowService`, independentemente de vir de `advance()` directo ou da confirmação de entrega da Fase 8), regista-se automaticamente a `transaction` com a comissão da plataforma, percentagem configurável via `PLATFORM_COMMISSION_PERCENT` (`config/commission.php`, referência 2%). Ainda sem escrow real, é só o registo contabilístico.
+- [x] Produtor vê a comissão e o valor líquido a receber na página do pedido.
+- [x] Testes cobrindo RN18, RN26 (nas duas formas), RN24/RN28 e autorização.
+
+> Nota de âmbito: RN23 (retenção/escrow) e RN25 completo (`retido`/`libertado`) ficam por automatizar — dependem da integração real com o agregador de mobile money (secção 17.3, Fase 3 de negócio, fora do MVP técnico). O esquema (`payments.held_at/released_at/refunded_at`) já está pronto para essa fase.
 
 ## Fase 10 — Painel administrativo e de operador
 
