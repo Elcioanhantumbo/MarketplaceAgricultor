@@ -130,10 +130,12 @@ Com esta fase fecha-se o **MVP técnico** (módulos 1–10 da secção 10 do bus
 
 > Nota de âmbito: WhatsApp fica por integrar (sem agregador escolhido, tal como o SMS — Fase 4); os eventos ficam prontos a enviar por qualquer canal assim que um agregador for contratado.
 
-## Fase 13 — Testes end-to-end
+## Fase 13 — Testes end-to-end ✅
 
-- Testar fluxo completo: produtor → comprador → entrega → pagamento → conclusão.
-- Testes de concorrência (RN06/RN15) e idempotência de pagamento (RN26).
+- [x] `tests/Feature/EndToEnd/FullOrderFlowTest.php` — dois testes que percorrem o ciclo de vida inteiro sempre pelos componentes Livewire (não pelos serviços directamente), tal como um utilizador real: perfil → propriedade → oferta → pedido → aceitação → avanço de estados → pagamento → confirmação/conclusão → comissão → notificações → avaliação mútua → reputação pública. Um cenário cobre levantamento próprio, o outro transporte intermediado (inclui o painel do operador em `/entregas`). O valor destes testes é apanhar problemas de "ligação" entre módulos que os testes unitários de cada fase (7–12), ao isolarem-se uns dos outros, não conseguem detectar.
+- [x] RN06/RN15 — `tests/Concurrency/ConcurrentAcceptTest.php`: até agora a "concorrência" só estava provada por simulação sequencial (duas chamadas a `accept()` seguidas, no mesmo processo/transacção do PHPUnit). Este teste novo lança dois **processos do SO reais e independentes** (via `proc_open`, cada um com a sua própria ligação PostgreSQL), sincronizados por uma barreira de ficheiro para maximizarem a sobreposição exactamente no `lockForUpdate`, contra uma base de dados sem embrulho de transacção (`DatabaseMigrations`, não `RefreshDatabase`, para que os processos vejam dados realmente committed). Confirma que, com dois pedidos cuja soma excede o stock, exactamente um `accept()` tem sucesso e o stock nunca fica negativo.
+- [x] RN26 (idempotência de pagamento) já estava coberta desde a Fase 9 (`PaymentWorkflowTest`): registar duas vezes o mesmo pedido actualiza em vez de duplicar, e reutilizar uma `provider_reference` de outro pedido é rejeitado. Revalidado neste conjunto, sem alterações.
+- [x] Suite completa: **86 testes, 261 assertions**, todos a passar (era 83 no fecho da Fase 12).
 
 ## Fase 14 — Piloto real
 
