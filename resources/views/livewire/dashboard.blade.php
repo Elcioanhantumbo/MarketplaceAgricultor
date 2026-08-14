@@ -1,4 +1,4 @@
-<x-layouts.app title="Painel — AgroLink MZ">
+<div>
     @php $user = auth()->user(); @endphp
 
     <h1 class="mb-1 text-lg font-semibold">Bem-vindo, {{ $user->name }}</h1>
@@ -37,4 +37,4 @@
         <a href="{{ route('ofertas') }}" wire:navigate class="rounded border border-stone-200 px-3 py-2 hover:border-green-600 hover:text-green-700">Pesquisar ofertas</a>
         <a href="{{ route('categorias') }}" wire:navigate class="rounded border border-stone-200 px-3 py-2 hover:border-green-600 hover:text-green-700">Categorias e produtos</a>
     </div>
-</x-layouts.app>
+</div>

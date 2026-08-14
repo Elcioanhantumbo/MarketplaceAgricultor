@@ -1,8 +1,8 @@
+<div>
 @php
     $labels = ['aberta' => 'Aberta', 'em_analise' => 'Em análise', 'procedente' => 'Procedente', 'improcedente' => 'Improcedente', 'resolvida' => 'Resolvida'];
 @endphp
 
-<x-layouts.app title="Disputas — AgroLink MZ">
     <h1 class="mb-1 text-lg font-semibold">Disputas</h1>
     <x-admin-nav />
     <p class="mb-4 text-sm text-stone-500">RN12/RN27 — decisão administrativa sobre reclamações reportadas após a entrega.</p>
@@ -45,4 +45,4 @@
             <p class="text-sm text-stone-500">Sem disputas reportadas.</p>
         @endforelse
     </div>
-</x-layouts.app>
+</div>

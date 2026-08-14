@@ -1,4 +1,4 @@
-<x-layouts.app title="Minhas propriedades — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Minhas propriedades</h1>
     <p class="mb-6 text-sm text-stone-500">Registe onde produz. Vai poder associar ofertas a estas propriedades.</p>
 
@@ -90,4 +90,4 @@
             <p class="text-sm text-stone-500">Ainda não tem propriedades registadas.</p>
         @endforelse
     </div>
-</x-layouts.app>
+</div>

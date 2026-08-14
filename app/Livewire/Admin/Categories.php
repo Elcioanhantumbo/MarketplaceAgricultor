@@ -8,8 +8,10 @@ use App\Services\AuditLogger;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Categorias — AgroLink MZ')]
 class Categories extends Component
 {
     use RequiresAdmin;

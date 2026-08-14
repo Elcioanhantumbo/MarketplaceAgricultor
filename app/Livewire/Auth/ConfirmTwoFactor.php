@@ -5,8 +5,12 @@ namespace App\Livewire\Auth;
 use App\Services\OtpService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Layout('components.layouts.guest')]
+#[Title('Confirmar acesso — AgroLink MZ')]
 class ConfirmTwoFactor extends Component
 {
     /** Secção 22 — segundo factor (OTP por SMS) exigido a admin/operador antes do painel. */

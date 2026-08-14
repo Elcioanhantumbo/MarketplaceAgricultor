@@ -1,4 +1,4 @@
-<x-layouts.guest title="Iniciar sessão — AgroLink MZ">
+<div>
     <h1 class="mb-6 text-lg font-semibold">Iniciar sessão</h1>
 
     <form wire:submit="login" class="space-y-4">
@@ -22,4 +22,4 @@
     <p class="mt-4 text-center text-sm text-stone-500">
         Ainda não tem conta? <a href="{{ route('registo') }}" class="text-green-700 hover:underline" wire:navigate>Criar conta</a>
     </p>
-</x-layouts.guest>
+</div>

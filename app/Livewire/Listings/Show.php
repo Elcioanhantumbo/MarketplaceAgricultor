@@ -41,6 +41,6 @@ class Show extends Component
 
     public function render()
     {
-        return view('livewire.listings.show');
+        return view('livewire.listings.show')->title($this->listing->product->name.' — AgroLink MZ');
     }
 }

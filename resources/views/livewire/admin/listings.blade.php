@@ -1,4 +1,4 @@
-<x-layouts.app title="Ofertas — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Ofertas</h1>
     <x-admin-nav />
 
@@ -26,4 +26,4 @@
     </div>
 
     <div class="mt-4">{{ $listings->links() }}</div>
-</x-layouts.app>
+</div>

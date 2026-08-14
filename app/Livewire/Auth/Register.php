@@ -10,8 +10,12 @@ use App\Support\MozambiquePhone;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Layout('components.layouts.guest')]
+#[Title('Criar conta — AgroLink MZ')]
 class Register extends Component
 {
     public string $name = '';

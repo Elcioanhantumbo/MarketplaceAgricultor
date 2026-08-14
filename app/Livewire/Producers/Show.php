@@ -26,6 +26,6 @@ class Show extends Component
                 ->get(),
             'averageRating' => $this->producer->averageRating(),
             'reviewsCount' => $this->producer->reviewsCount(),
-        ]);
+        ])->title(($this->producer->business_name ?: $this->producer->user->name).' — AgroLink MZ');
     }
 }

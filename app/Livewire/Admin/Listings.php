@@ -4,10 +4,12 @@ namespace App\Livewire\Admin;
 
 use App\Livewire\Concerns\RequiresAdmin;
 use App\Models\ProductListing;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Title('Ofertas — AgroLink MZ')]
 class Listings extends Component
 {
     use WithPagination, RequiresAdmin;

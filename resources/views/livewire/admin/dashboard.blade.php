@@ -1,4 +1,4 @@
-<x-layouts.app title="Painel administrativo — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Painel administrativo</h1>
     <x-admin-nav />
 
@@ -24,4 +24,4 @@
             <p class="mt-1 text-2xl font-semibold">{{ $kpis['taxa_recompra'] !== null ? $kpis['taxa_recompra'].'%' : '—' }}</p>
         </div>
     </div>
-</x-layouts.app>
+</div>

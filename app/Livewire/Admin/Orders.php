@@ -4,10 +4,12 @@ namespace App\Livewire\Admin;
 
 use App\Livewire\Concerns\RequiresAdmin;
 use App\Models\Order;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Title('Pedidos — AgroLink MZ')]
 class Orders extends Component
 {
     use WithPagination, RequiresAdmin;

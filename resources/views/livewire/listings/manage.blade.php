@@ -1,4 +1,4 @@
-<x-layouts.app title="Minhas ofertas — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Minhas ofertas</h1>
     <p class="mb-6 text-sm text-stone-500">Publique quantidade, preço e período de disponibilidade de cada produto.</p>
 
@@ -102,4 +102,4 @@
             <p class="text-sm text-stone-500">Ainda não tem ofertas publicadas.</p>
         @endforelse
     </div>
-</x-layouts.app>
+</div>

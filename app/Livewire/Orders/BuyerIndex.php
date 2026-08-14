@@ -3,8 +3,10 @@
 namespace App\Livewire\Orders;
 
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Meus pedidos — AgroLink MZ')]
 class BuyerIndex extends Component
 {
     public function mount(): void

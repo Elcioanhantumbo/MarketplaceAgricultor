@@ -1,4 +1,4 @@
-<x-layouts.guest title="Confirmar acesso — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Confirmar acesso administrativo</h1>
     <p class="mb-6 text-sm text-stone-500">
         Por segurança, o acesso ao painel administrativo exige um segundo código. Enviámos um código de
@@ -25,4 +25,4 @@
     @if (app()->environment('local'))
         <p class="mt-4 text-center text-xs text-stone-400">Ambiente local: veja o código em storage/logs/laravel.log.</p>
     @endif
-</x-layouts.guest>
+</div>

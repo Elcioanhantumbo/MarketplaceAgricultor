@@ -6,10 +6,12 @@ use App\Livewire\Concerns\RequiresAdmin;
 use App\Models\User;
 use App\Services\AuditLogger;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Title('Utilizadores — AgroLink MZ')]
 class Users extends Component
 {
     use WithPagination, RequiresAdmin;

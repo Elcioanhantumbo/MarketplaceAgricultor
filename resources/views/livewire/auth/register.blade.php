@@ -1,4 +1,4 @@
-<x-layouts.guest title="Criar conta — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Criar conta</h1>
     <p class="mb-6 text-sm text-stone-500">Produtores e compradores registam-se aqui. Transportadores participam de forma assistida no piloto.</p>
 
@@ -47,4 +47,4 @@
     <p class="mt-4 text-center text-sm text-stone-500">
         Já tem conta? <a href="{{ route('login') }}" class="text-green-700 hover:underline" wire:navigate>Iniciar sessão</a>
     </p>
-</x-layouts.guest>
+</div>

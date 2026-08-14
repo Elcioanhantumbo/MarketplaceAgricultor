@@ -1,4 +1,4 @@
-<x-layouts.app title="Categorias e produtos — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Categorias e produtos</h1>
     <p class="mb-6 text-sm text-stone-500">Catálogo de referência do piloto Dondo/Nhamatanda — Beira.</p>
 
@@ -17,4 +17,4 @@
             </div>
         @endforeach
     </div>
-</x-layouts.app>
+</div>

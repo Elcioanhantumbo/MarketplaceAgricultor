@@ -1,4 +1,4 @@
-<x-layouts.app title="Utilizadores — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Utilizadores</h1>
     <x-admin-nav />
 
@@ -36,4 +36,4 @@
     </div>
 
     <div class="mt-4">{{ $users->links() }}</div>
-</x-layouts.app>
+</div>

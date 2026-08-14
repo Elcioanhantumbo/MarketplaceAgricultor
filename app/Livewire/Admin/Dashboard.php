@@ -7,8 +7,10 @@ use App\Models\Delivery;
 use App\Models\Order;
 use App\Models\ProductListing;
 use App\Models\Transaction;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Painel administrativo — AgroLink MZ')]
 class Dashboard extends Component
 {
     use RequiresAdmin;

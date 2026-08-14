@@ -1,4 +1,4 @@
-<x-layouts.app title="Categorias — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Categorias e produtos</h1>
     <x-admin-nav />
 
@@ -39,4 +39,4 @@
             </div>
         @endforeach
     </div>
-</x-layouts.app>
+</div>

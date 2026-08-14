@@ -7,8 +7,10 @@ use App\Models\Complaint;
 use App\Services\AuditLogger;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Disputas — AgroLink MZ')]
 class Disputes extends Component
 {
     use RequiresAdmin;

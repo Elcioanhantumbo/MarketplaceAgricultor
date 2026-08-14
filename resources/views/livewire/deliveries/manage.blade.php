@@ -1,3 +1,4 @@
+<div>
 @php
     $labels = [
         'solicitada' => 'Solicitada', 'atribuida' => 'Atribuída', 'em_recolha' => 'Em recolha',
@@ -7,7 +8,6 @@
     $nextLabels = ['em_recolha' => 'Marcar em recolha', 'em_transito' => 'Marcar em trânsito', 'entregue' => 'Marcar entregue'];
 @endphp
 
-<x-layouts.app title="Entregas — AgroLink MZ">
     <h1 class="mb-1 text-lg font-semibold">Coordenação de entregas</h1>
     <p class="mb-6 text-sm text-stone-500">Transporte intermediado — piloto com coordenação assistida (secção 16.2).</p>
 
@@ -70,4 +70,4 @@
             <p class="text-sm text-stone-500">Sem entregas por coordenar.</p>
         @endforelse
     </div>
-</x-layouts.app>
+</div>

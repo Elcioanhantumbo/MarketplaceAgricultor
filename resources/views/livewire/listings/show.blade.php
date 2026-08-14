@@ -1,4 +1,4 @@
-<x-layouts.app title="{{ $listing->product->name }} — AgroLink MZ">
+<div>
     <a href="{{ route('ofertas') }}" wire:navigate class="text-sm text-green-700 hover:underline">&larr; Voltar às ofertas</a>
 
     <div class="mt-4 rounded border border-stone-200 p-6">
@@ -90,4 +90,4 @@
             como comprador para fazer um pedido.
         </p>
     @endauth
-</x-layouts.app>
+</div>

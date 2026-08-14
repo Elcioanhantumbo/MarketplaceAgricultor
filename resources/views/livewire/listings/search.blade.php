@@ -1,4 +1,4 @@
-<x-layouts.app title="Pesquisar ofertas — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Ofertas disponíveis</h1>
     <p class="mb-6 text-sm text-stone-500">Corredor Dondo/Nhamatanda — Beira.</p>
 
@@ -83,4 +83,4 @@
     <div class="mt-6">
         {{ $listings->links() }}
     </div>
-</x-layouts.app>
+</div>

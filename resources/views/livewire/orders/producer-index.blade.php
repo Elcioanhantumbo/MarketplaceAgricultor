@@ -1,4 +1,4 @@
-<x-layouts.app title="Pedidos recebidos — AgroLink MZ">
+<div>
     <h1 class="mb-6 text-lg font-semibold">Pedidos recebidos</h1>
 
     <div class="space-y-3">
@@ -20,4 +20,4 @@
     <div class="mt-6">
         {{ $orders->links() }}
     </div>
-</x-layouts.app>
+</div>

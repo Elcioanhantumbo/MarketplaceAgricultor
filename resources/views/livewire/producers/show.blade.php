@@ -1,4 +1,4 @@
-<x-layouts.app title="{{ $producer->business_name ?: $producer->user->name }} — AgroLink MZ">
+<div>
     <div class="rounded border border-stone-200 p-6">
         <div class="flex items-center gap-4">
             @if ($producer->user->profile?->avatar_path)
@@ -61,4 +61,4 @@
             <p class="text-sm text-stone-500">Ainda sem avaliações.</p>
         @endforelse
     </div>
-</x-layouts.app>
+</div>

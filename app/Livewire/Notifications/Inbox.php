@@ -3,9 +3,11 @@
 namespace App\Livewire\Notifications;
 
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Title('Notificações — AgroLink MZ')]
 class Inbox extends Component
 {
     use WithPagination;

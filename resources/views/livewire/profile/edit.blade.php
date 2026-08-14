@@ -1,4 +1,4 @@
-<x-layouts.app title="Editar perfil — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Editar perfil</h1>
     <p class="mb-6 text-sm text-stone-500">Telefone: {{ auth()->user()->phone }} (verificado)</p>
 
@@ -85,4 +85,4 @@
             Guardar
         </button>
     </form>
-</x-layouts.app>
+</div>

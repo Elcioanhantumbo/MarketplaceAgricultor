@@ -4,9 +4,11 @@ namespace App\Livewire\Profile;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
+#[Title('Editar perfil — AgroLink MZ')]
 class Edit extends Component
 {
     use WithFileUploads;

@@ -6,8 +6,12 @@ use App\Support\MozambiquePhone;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Layout('components.layouts.guest')]
+#[Title('Iniciar sessão — AgroLink MZ')]
 class Login extends Component
 {
     public string $phone = '';

@@ -7,8 +7,10 @@ use App\Services\DeliveryWorkflowService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Entregas — AgroLink MZ')]
 class Manage extends Component
 {
     public ?int $assigningId = null;

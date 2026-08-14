@@ -1,3 +1,4 @@
+<div>
 @php
     $isProducer = auth()->user()->id === $order->producer->user_id;
     $isBuyer = auth()->user()->id === $order->buyer_id;
@@ -8,7 +9,6 @@
         : ($isProducer ? route('pedidos-recebidos') : route('meus-pedidos'));
 @endphp
 
-<x-layouts.app title="Pedido #{{ $order->id }} — AgroLink MZ">
     <a href="{{ $backRoute }}" wire:navigate class="text-sm text-green-700 hover:underline">&larr; Voltar aos pedidos</a>
 
     <div class="mt-4 flex items-center justify-between">
@@ -259,4 +259,4 @@
             @endif
         </div>
     @endif
-</x-layouts.app>
+</div>

@@ -1,3 +1,4 @@
+<div>
 @php
     $eventLabels = [
         'novo_pedido' => 'Novo pedido',
@@ -10,7 +11,6 @@
     ];
 @endphp
 
-<x-layouts.app title="Notificações — AgroLink MZ">
     <h1 class="mb-1 text-lg font-semibold">Notificações</h1>
     <p class="mb-6 text-sm text-stone-500">
         Enviadas por SMS (secção 21). Enquanto o agregador local não estiver contratado, ficam registadas aqui.
@@ -31,4 +31,4 @@
     </div>
 
     <div class="mt-4">{{ $notifications->links() }}</div>
-</x-layouts.app>
+</div>

@@ -1,4 +1,4 @@
-<x-layouts.app title="Verificações — AgroLink MZ">
+<div>
     <h1 class="mb-1 text-lg font-semibold">Verificação de perfis</h1>
     <x-admin-nav />
     <p class="mb-4 text-sm text-stone-500">RN16 — o selo de verificado só é atribuído após revisão administrativa.</p>
@@ -18,4 +18,4 @@
             <p class="text-sm text-stone-500">Sem perfis pendentes de verificação.</p>
         @endforelse
     </div>
-</x-layouts.app>
+</div>

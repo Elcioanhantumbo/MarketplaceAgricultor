@@ -7,8 +7,10 @@ use App\Models\ProductListing;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Minhas ofertas — AgroLink MZ')]
 class Manage extends Component
 {
     public ?int $editingId = null;

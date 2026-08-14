@@ -6,8 +6,10 @@ use App\Models\Farm;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Minhas propriedades — AgroLink MZ')]
 class Manage extends Component
 {
     public ?int $editingId = null;

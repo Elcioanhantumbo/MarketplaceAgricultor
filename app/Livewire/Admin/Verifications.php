@@ -7,8 +7,10 @@ use App\Models\Profile;
 use App\Services\AuditLogger;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Verificações — AgroLink MZ')]
 class Verifications extends Component
 {
     use RequiresAdmin;

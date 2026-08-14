@@ -5,10 +5,12 @@ namespace App\Livewire\Listings;
 use App\Models\Category;
 use App\Models\Location;
 use App\Models\ProductListing;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Title('Pesquisar ofertas — AgroLink MZ')]
 class Search extends Component
 {
     use WithPagination;
