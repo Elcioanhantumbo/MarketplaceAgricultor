@@ -4,6 +4,8 @@ namespace App\Livewire\Auth;
 
 use App\Support\MozambiquePhone;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Login extends Component
@@ -12,6 +14,12 @@ class Login extends Component
 
     public string $password = '';
 
+    /** Secção 22 — limita tentativas de força bruta por telefone+IP. */
+    private function throttleKey(): string
+    {
+        return Str::transliterate(Str::lower($this->phone).'|'.request()->ip());
+    }
+
     public function login(): void
     {
         $this->validate([
@@ -19,13 +27,25 @@ class Login extends Component
             'password' => 'required|string',
         ]);
 
+        $key = $this->throttleKey();
+
+        if (RateLimiter::tooManyAttempts($key, maxAttempts: 5)) {
+            $seconds = RateLimiter::availableIn($key);
+            $this->addError('phone', "Demasiadas tentativas. Tente novamente dentro de {$seconds} segundos.");
+
+            return;
+        }
+
         $normalizedPhone = MozambiquePhone::normalize($this->phone);
 
         if (! $normalizedPhone || ! Auth::attempt(['phone' => $normalizedPhone, 'password' => $this->password])) {
+            RateLimiter::hit($key, decaySeconds: 60);
             $this->addError('phone', 'Telefone ou palavra-passe incorrectos.');
 
             return;
         }
+
+        RateLimiter::clear($key);
 
         if (Auth::user()->status === 'blocked') {
             Auth::logout();

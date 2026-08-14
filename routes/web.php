@@ -7,6 +7,7 @@ use App\Livewire\Admin\Listings as AdminListings;
 use App\Livewire\Admin\Orders as AdminOrders;
 use App\Livewire\Admin\Users as AdminUsers;
 use App\Livewire\Admin\Verifications as AdminVerifications;
+use App\Livewire\Auth\ConfirmTwoFactor;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Auth\VerifyOtp;
@@ -67,8 +68,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/pedidos/{order}', ShowOrder::class)->name('pedidos.show');
         Route::get('/entregas', ManageDeliveries::class)->name('entregas');
         Route::get('/notificacoes', NotificationsInbox::class)->name('notificacoes');
+        Route::get('/confirmar-acesso', ConfirmTwoFactor::class)->name('confirmar-acesso');
 
-        Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::middleware(['admin', 'admin.2fa'])->prefix('admin')->name('admin.')->group(function () {
             Route::get('/', AdminDashboard::class)->name('dashboard');
             Route::get('/utilizadores', AdminUsers::class)->name('utilizadores');
             Route::get('/verificacoes', AdminVerifications::class)->name('verificacoes');

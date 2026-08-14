@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\BackupDatabase;
 use App\Console\Commands\ExpireProductListings;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -17,3 +18,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command(ExpireProductListings::class)->daily();
+Schedule::command(BackupDatabase::class)->dailyAt('02:00');

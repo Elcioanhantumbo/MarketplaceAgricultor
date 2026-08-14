@@ -111,6 +111,34 @@ class RegistrationOtpLoginTest extends TestCase
         $this->actingAs($user)->get(route('painel'))->assertOk();
     }
 
+    /** Secção 22 — bloqueia tentativas repetidas de login com a palavra-passe errada. */
+    public function test_login_is_rate_limited_after_repeated_wrong_password(): void
+    {
+        $user = User::factory()->create([
+            'phone' => '+258841234571',
+            'password' => 'senha1234',
+            'status' => 'active',
+            'phone_verified_at' => now(),
+        ]);
+
+        for ($i = 0; $i < 5; $i++) {
+            Livewire::test(Login::class)
+                ->set('phone', '84 123 4571')
+                ->set('password', 'palavra-errada')
+                ->call('login')
+                ->assertHasErrors('phone');
+        }
+
+        // A 6ª tentativa é bloqueada mesmo com a palavra-passe certa.
+        Livewire::test(Login::class)
+            ->set('phone', '84 123 4571')
+            ->set('password', 'senha1234')
+            ->call('login')
+            ->assertHasErrors('phone');
+
+        $this->assertGuest();
+    }
+
     /**
      * O código OTP é armazenado como hash (não recuperável); para testar a
      * verificação com o código certo, geramos directamente com um valor

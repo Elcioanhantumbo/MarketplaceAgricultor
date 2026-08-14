@@ -137,10 +137,18 @@ Com esta fase fecha-se o **MVP técnico** (módulos 1–10 da secção 10 do bus
 - [x] RN26 (idempotência de pagamento) já estava coberta desde a Fase 9 (`PaymentWorkflowTest`): registar duas vezes o mesmo pedido actualiza em vez de duplicar, e reutilizar uma `provider_reference` de outro pedido é rejeitado. Revalidado neste conjunto, sem alterações.
 - [x] Suite completa: **86 testes, 261 assertions**, todos a passar (era 83 no fecho da Fase 12).
 
-## Fase 14 — Piloto real
+## Fase 14 — Piloto real 🔶
 
-- Lançamento no corredor Dondo/Nhamatanda — Beira (secção 24).
-- Meta: 20 produtores, 10 compradores, 3 transportadores.
+O lançamento em si (cadastrar manualmente os primeiros produtores/compradores/transportadores no corredor Dondo/Nhamatanda-Beira, meta de 20/10/3 — secção 24) é operacional, não técnico, e fica fora do que este repositório pode fazer sozinho. O que ficou pronto é a prontidão técnica de produção que a secção 22 pede antes de ligar tráfego real:
+
+- [x] **Checklist de produção** — `docs/DEPLOY.md`, cobrindo os pontos abaixo.
+- [x] HTTPS forçado em produção (`AppServiceProvider`) e `trustProxies` configurado para operar atrás de um proxy/balanceador; `SESSION_SECURE_COOKIE` documentado no `.env.example`.
+- [x] Rate limiting no login (5 tentativas/60s por telefone+IP) — o OTP de verificação de telefone já tinha limite de tentativas e cooldown de reenvio desde a Fase 4.
+- [x] **2FA para contas administrativas**: `admin`/`operator` passam por um segundo código OTP (reaproveitando o `OtpService` já existente) antes de qualquer página de `/admin` (`EnsureTwoFactorConfirmed`, rota `/confirmar-acesso`), válido por sessão.
+- [x] `php artisan app:backup-database` — dump diário agendado (`pg_dump`, disco/retenção configuráveis) com purga automática dos backups fora da retenção. **Restauro testado de facto**: gerado um dump real da base de dados de desenvolvimento, restaurado numa base de dados nova, e as contagens de linhas em `users`/`categories`/`products`/`locations` conferidas idênticas antes/depois.
+- [x] `/up` (health-check nativo do Laravel) reforçado para também verificar a ligação à base de dados, pronto a ligar a um monitor externo com alertas — a secção 22 pede monitorização com alertas, que depende de um serviço externo escolhido pelo operador.
+- [x] Testes cobrindo rate limiting do login, o fluxo completo de 2FA administrativo (incluindo código errado e acesso negado a quem não é admin/operador) e a orquestração do comando de backup (geração, falha, purga de retenção).
+- [ ] O lançamento real — cadastro manual dos primeiros utilizadores, coordenação assistida de transporte, ajustes a partir de transacções reais — fica para quando o operador iniciar o piloto no terreno.
 
 ---
 

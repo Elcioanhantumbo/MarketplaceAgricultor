@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureIsAdmin;
 use App\Http\Middleware\EnsurePhoneIsVerified;
+use App\Http\Middleware\EnsureTwoFactorConfirmed;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,7 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'verified.phone' => EnsurePhoneIsVerified::class,
             'admin' => EnsureIsAdmin::class,
+            'admin.2fa' => EnsureTwoFactorConfirmed::class,
         ]);
+
+        // Secção 22 — em produção, a aplicação corre atrás de um
+        // proxy/balanceador que termina o HTTPS; sem isto, Laravel vê o
+        // pedido como HTTP simples e gera URLs/cookies incorrectos.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
