@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 class DeliveryWorkflowService
 {
+    public function __construct(private readonly NotificationService $notifications) {}
+
     /** RN21 — estados da entrega, por ordem. */
     private const array TRANSITIONS = [
         'solicitada' => ['atribuida'],
@@ -43,13 +45,29 @@ class DeliveryWorkflowService
             $order = $delivery->order()->getResults();
             $subtotal = $order->items->sum('subtotal');
             $order->update(['delivery_fee' => $cost, 'total_amount' => $subtotal + $cost]);
+
+            $this->notifications->notify(
+                $order->buyer,
+                'entrega_atribuida',
+                "AgroLink MZ: a entrega do pedido #{$order->id} foi atribuída.",
+            );
         });
     }
 
+    /** Secção 21 — evento notificado: entrega a caminho. */
     public function advance(Delivery $delivery, string $toStatus): void
     {
         $this->guardTransition($delivery, $toStatus);
         $delivery->update(['status' => $toStatus]);
+
+        if ($toStatus === 'em_transito') {
+            $order = $delivery->order()->getResults();
+            $this->notifications->notify(
+                $order->buyer,
+                'entrega_a_caminho',
+                "AgroLink MZ: a sua encomenda do pedido #{$order->id} está a caminho.",
+            );
+        }
     }
 
     /** RN22 — confirmação de entrega pelo comprador; conclui o pedido associado. */

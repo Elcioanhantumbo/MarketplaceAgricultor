@@ -21,6 +21,7 @@
                     <a href="{{ route('categorias') }}" wire:navigate class="text-stone-600 hover:text-green-700">Categorias</a>
 
                     @auth
+                        <a href="{{ route('notificacoes') }}" wire:navigate class="text-stone-600 hover:text-green-700">Notificações</a>
                         <span class="text-stone-600">{{ auth()->user()->name }}</span>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -40,6 +41,7 @@
                 <a href="{{ route('categorias') }}" wire:navigate class="block py-2 text-stone-600 hover:text-green-700">Categorias</a>
 
                 @auth
+                    <a href="{{ route('notificacoes') }}" wire:navigate class="block py-2 text-stone-600 hover:text-green-700">Notificações</a>
                     <div class="mt-2 border-t border-stone-100 pt-2">
                         <span class="block py-1 text-stone-600">{{ auth()->user()->name }}</span>
                         <form method="POST" action="{{ route('logout') }}">

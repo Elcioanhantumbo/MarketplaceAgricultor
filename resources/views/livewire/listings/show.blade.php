@@ -27,12 +27,28 @@
         </dl>
     </div>
 
+    @if ($listing->latitude && $listing->longitude)
+        <div x-data="singleLocationMap({{ $listing->latitude }}, {{ $listing->longitude }}, '{{ e($listing->product->name) }}')"
+             class="mt-4 h-56 rounded border border-stone-200" wire:ignore></div>
+    @endif
+
     <div class="mt-4 rounded border border-stone-200 p-6">
         <h2 class="text-sm font-medium text-stone-500">Produtor</h2>
-        <p class="mt-1 font-medium">{{ $listing->producer->business_name ?: $listing->producer->user->name }}</p>
+        <a href="{{ route('produtores.show', $listing->producer) }}" wire:navigate class="mt-1 block font-medium text-green-700 hover:underline">
+            {{ $listing->producer->business_name ?: $listing->producer->user->name }}
+        </a>
         @if ($listing->producer->business_name)
             <p class="text-sm text-stone-500">{{ $listing->producer->user->name }}</p>
         @endif
+        @php $rating = $listing->producer->averageRating(); @endphp
+        <p class="mt-1 text-sm">
+            @if ($rating)
+                <span class="text-amber-500">{{ str_repeat('★', round($rating)) }}{{ str_repeat('☆', 5 - round($rating)) }}</span>
+                <span class="text-stone-500">{{ number_format($rating, 1) }}</span>
+            @else
+                <span class="text-stone-400">Ainda sem avaliações</span>
+            @endif
+        </p>
         @if ($bio = $listing->producer->user->profile?->bio)
             <p class="mt-2 text-sm text-stone-600">{{ $bio }}</p>
         @endif

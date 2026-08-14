@@ -17,9 +17,11 @@ use App\Livewire\Farms\Manage as ManageFarms;
 use App\Livewire\Listings\Manage as ManageListings;
 use App\Livewire\Listings\Search as SearchListings;
 use App\Livewire\Listings\Show as ShowListing;
+use App\Livewire\Notifications\Inbox as NotificationsInbox;
 use App\Livewire\Orders\BuyerIndex as MyOrders;
 use App\Livewire\Orders\ProducerIndex as ReceivedOrders;
 use App\Livewire\Orders\Show as ShowOrder;
+use App\Livewire\Producers\Show as ShowProducer;
 use App\Livewire\Profile\Edit as EditProfile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +39,7 @@ Route::get('/', function () {
 Route::get('/categorias', CatalogBrowse::class)->name('categorias');
 Route::get('/ofertas', SearchListings::class)->name('ofertas');
 Route::get('/ofertas/{listing}', ShowListing::class)->name('ofertas.show');
+Route::get('/produtores/{producer}', ShowProducer::class)->name('produtores.show');
 
 Route::middleware('guest')->group(function () {
     Route::get('/registo', Register::class)->name('registo');
@@ -63,6 +66,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/pedidos-recebidos', ReceivedOrders::class)->name('pedidos-recebidos');
         Route::get('/pedidos/{order}', ShowOrder::class)->name('pedidos.show');
         Route::get('/entregas', ManageDeliveries::class)->name('entregas');
+        Route::get('/notificacoes', NotificationsInbox::class)->name('notificacoes');
 
         Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
             Route::get('/', AdminDashboard::class)->name('dashboard');

@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 
 class OrderWorkflowService
 {
+    public function __construct(private readonly NotificationService $notifications) {}
+
     /**
      * Quem pode fazer cada transição a partir de que estado.
      * "producer" e "buyer" referem-se ao lado do pedido; a autorização
@@ -59,6 +61,12 @@ class OrderWorkflowService
             ]);
 
             $this->recordHistory($order, null, 'pendente', $buyer);
+
+            $this->notifications->notify(
+                $listing->producer->user,
+                'novo_pedido',
+                "AgroLink MZ: novo pedido #{$order->id} de {$buyer->name}.",
+            );
 
             return $order;
         });
@@ -163,6 +171,33 @@ class OrderWorkflowService
         if ($to === 'concluido') {
             $this->recordTransaction($order);
         }
+
+        $this->notifyTransition($order, $to);
+    }
+
+    /** Secção 21 — eventos notificados: aceitação/rejeição e conclusão. */
+    private function notifyTransition(Order $order, string $to): void
+    {
+        match ($to) {
+            'aceite' => $this->notifications->notify(
+                $order->buyer,
+                'pedido_aceite',
+                "AgroLink MZ: o seu pedido #{$order->id} foi aceite.",
+            ),
+            'rejeitado' => $this->notifications->notify(
+                $order->buyer,
+                'pedido_rejeitado',
+                "AgroLink MZ: o seu pedido #{$order->id} foi rejeitado.",
+            ),
+            'concluido' => collect([$order->buyer, $order->producer->user])->each(
+                fn (User $user) => $this->notifications->notify(
+                    $user,
+                    'pedido_concluido',
+                    "AgroLink MZ: o pedido #{$order->id} foi concluído.",
+                ),
+            ),
+            default => null,
+        };
     }
 
     /**

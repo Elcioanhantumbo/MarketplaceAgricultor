@@ -73,6 +73,12 @@ class User extends Authenticatable
         return $this->hasMany(OtpCode::class);
     }
 
+    /** Secção 21 — histórico de notificações SMS/WhatsApp enviadas ao utilizador. */
+    public function notificationLogs(): HasMany
+    {
+        return $this->hasMany(NotificationLog::class);
+    }
+
     /** RN02 — dados mínimos de perfil antes de publicar/operar. */
     public function hasMinimumProfile(): bool
     {

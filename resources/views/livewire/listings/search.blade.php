@@ -46,6 +46,20 @@
         @endif
     </div>
 
+    @php
+        $mapMarkers = $listings->filter(fn ($l) => $l->latitude && $l->longitude)->map(fn ($l) => [
+            'lat' => (float) $l->latitude,
+            'lng' => (float) $l->longitude,
+            'popup' => e($l->product->name).' — '.number_format((float) $l->price, 2).' MZN',
+        ])->values();
+    @endphp
+    @if ($mapMarkers->isNotEmpty())
+        <div wire:key="map-{{ $listings->pluck('id')->implode('-') }}"
+             x-data="listingsMap({{ $mapMarkers->toJson() }})"
+             class="mb-6 h-64 rounded border border-stone-200"
+             wire:ignore></div>
+    @endif
+
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         @forelse ($listings as $listing)
             <a href="{{ route('ofertas.show', $listing) }}" wire:navigate class="block rounded border border-stone-200 p-4 hover:border-green-600">

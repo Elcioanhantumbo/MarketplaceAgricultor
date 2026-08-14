@@ -221,4 +221,42 @@
             @endif
         </div>
     @endif
+
+    @if ($order->status === 'concluido')
+        <div class="mt-8">
+            <h2 class="mb-2 text-sm font-medium text-stone-500">Avaliações</h2>
+
+            @forelse ($order->reviews as $review)
+                <div class="mb-2 rounded border border-stone-200 p-3 text-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="font-medium">{{ $review->reviewer->name }}</span>
+                        <span class="text-amber-500">{{ str_repeat('★', $review->rating) }}{{ str_repeat('☆', 5 - $review->rating) }}</span>
+                    </div>
+                    @if ($review->comment)
+                        <p class="mt-1 text-stone-600">{{ $review->comment }}</p>
+                    @endif
+                </div>
+            @empty
+                <p class="text-sm text-stone-500">Ainda sem avaliações.</p>
+            @endforelse
+
+            @if (($isBuyer || $isProducer) && ! $order->reviews->contains('reviewer_id', auth()->id()))
+                <form wire:submit="submitReview" class="mt-3 space-y-2 rounded border border-stone-200 p-3">
+                    <label class="block text-xs font-medium text-stone-500">
+                        A sua avaliação de {{ $isBuyer ? ($order->producer->business_name ?: $order->producer->user->name) : $order->buyer->name }}
+                    </label>
+                    <select wire:model="review_rating" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
+                        <option value="5">★★★★★ Excelente</option>
+                        <option value="4">★★★★☆ Muito bom</option>
+                        <option value="3">★★★☆☆ Razoável</option>
+                        <option value="2">★★☆☆☆ Fraco</option>
+                        <option value="1">★☆☆☆☆ Mau</option>
+                    </select>
+                    <textarea wire:model="review_comment" rows="2" placeholder="Comentário (opcional)…" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600"></textarea>
+                    @error('review_comment') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+                    <button type="submit" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Enviar avaliação</button>
+                </form>
+            @endif
+        </div>
+    @endif
 </x-layouts.app>

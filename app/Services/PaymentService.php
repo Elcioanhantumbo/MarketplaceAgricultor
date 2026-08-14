@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class PaymentService
 {
+    public function __construct(private readonly NotificationService $notifications) {}
+
     private const array METHODS = ['mpesa', 'emola', 'mkesh', 'transferencia', 'dinheiro'];
 
     /**
@@ -31,7 +33,7 @@ class PaymentService
 
         try {
             return DB::transaction(function () use ($order, $method, $providerReference) {
-                return Payment::updateOrCreate(
+                $payment = Payment::updateOrCreate(
                     ['order_id' => $order->id],
                     [
                         'method' => $method,
@@ -40,6 +42,14 @@ class PaymentService
                         'status' => 'pago',
                     ],
                 );
+
+                $this->notifications->notify(
+                    $order->producer->user,
+                    'pagamento_recebido',
+                    "AgroLink MZ: pagamento registado para o pedido #{$order->id}.",
+                );
+
+                return $payment;
             });
         } catch (UniqueConstraintViolationException) {
             throw new OrderWorkflowException('Esta referência de pagamento já está associada a outro pedido.');

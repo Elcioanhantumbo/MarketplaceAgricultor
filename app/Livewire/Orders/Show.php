@@ -21,6 +21,10 @@ class Show extends Component
 
     public string $complaint_description = '';
 
+    public int $review_rating = 5;
+
+    public string $review_comment = '';
+
     public function mount(Order $order): void
     {
         Gate::authorize('view', $order);
@@ -34,13 +38,14 @@ class Show extends Component
             'payments',
             'transaction',
             'complaints',
+            'reviews.reviewer',
         ]);
     }
 
     private function refresh(): void
     {
         $this->order->refresh();
-        $this->order->load('statusHistory.changedBy', 'delivery.transporter', 'payments', 'transaction', 'complaints');
+        $this->order->load('statusHistory.changedBy', 'delivery.transporter', 'payments', 'transaction', 'complaints', 'reviews.reviewer');
     }
 
     private function act(callable $action): void
@@ -123,6 +128,37 @@ class Show extends Component
         ]);
 
         $this->complaint_description = '';
+        $this->refresh();
+    }
+
+    /** RN13 — avaliação entre as partes de uma transacção concluída. */
+    public function submitReview(): void
+    {
+        Gate::authorize('review', $this->order);
+
+        if ($this->order->reviews->contains('reviewer_id', Auth::id())) {
+            $this->addError('review_comment', 'Já avaliou este pedido.');
+
+            return;
+        }
+
+        $this->validate([
+            'review_rating' => 'required|integer|min:1|max:5',
+            'review_comment' => 'nullable|string|max:1000',
+        ]);
+
+        $revieweeId = Auth::id() === $this->order->buyer_id
+            ? $this->order->producer->user_id
+            : $this->order->buyer_id;
+
+        $this->order->reviews()->create([
+            'reviewer_id' => Auth::id(),
+            'reviewee_id' => $revieweeId,
+            'rating' => $this->review_rating,
+            'comment' => $this->review_comment ?: null,
+        ]);
+
+        $this->review_comment = '';
         $this->refresh();
     }
 

@@ -35,4 +35,20 @@ class Producer extends Model
     {
         return $this->user->hasMinimumProfile() && $this->farms()->exists();
     }
+
+    /** RN13 — reputação a partir das avaliações recebidas pelo produtor. */
+    public function reviews()
+    {
+        return Review::where('reviewee_id', $this->user_id);
+    }
+
+    public function averageRating(): ?float
+    {
+        return $this->reviews()->avg('rating');
+    }
+
+    public function reviewsCount(): int
+    {
+        return $this->reviews()->count();
+    }
 }

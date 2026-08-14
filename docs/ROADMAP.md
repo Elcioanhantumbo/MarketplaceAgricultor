@@ -119,11 +119,16 @@ Com esta fase fecha-se o **MVP técnico** (módulos 1–10 da secção 10 do bus
 
 > Nota de âmbito: o service worker cobre só o "app shell" estático. Cache mais profunda de dados haveria de respeitar a secção 20 ("operações críticas... sempre sincronizadas com o servidor antes de serem consideradas definitivas") — decidiu-se não fazê-lo agora para não arriscar mostrar dados desactualizados (stock, estado de pedidos) offline.
 
-## Fase 12 — Mapa, avaliações e notificações
+## Fase 12 — Mapa, avaliações e notificações ✅
 
-- Mapa e localização básica (PostGIS).
-- Avaliações pós-transacção (RN13).
-- Notificações SMS/WhatsApp (secção 21).
+- [x] RN13 — avaliações pós-transacção: comprador e produtor avaliam-se um ao outro depois de um pedido `concluido` (1–5 estrelas + comentário opcional), uma vez por pedido (`OrderPolicy::review`, reforçado pelo constraint único desde a Fase 3).
+- [x] Perfil público do produtor (`/produtores/{producer}`) com reputação (média + número de avaliações), biografia, localização e ofertas actualmente disponíveis — a "reputação do produtor" da secção 11.2. Ligado a partir do detalhe da oferta.
+- [x] Notificações (secção 21): `NotificationService` regista e "envia" (via `SmsGateway`, ainda o driver `log` da Fase 4) os eventos novo pedido, aceitação/rejeição, pagamento recebido, entrega atribuída/a caminho e conclusão. Cada utilizador consulta o seu histórico em `/notificacoes`.
+- [x] Mapa e localização básica — sem PostGIS disponível (nota da Fase 2/6), usa-se Leaflet + OpenStreetMap sobre `latitude`/`longitude` simples: pontos das ofertas em `/ofertas` e localização da propriedade no detalhe da oferta.
+- [x] O Leaflet (~43 KB gzipped) é carregado por *import* dinâmico só nas páginas com mapa — o `app.js` principal ficou em ~2 KB gzipped, mantendo as restantes páginas leves (secção 19).
+- [x] Testes cobrindo RN13 (incluindo dupla-avaliação e avaliação antes da conclusão), reputação pública do produtor, e notificação de cada evento da secção 21.
+
+> Nota de âmbito: WhatsApp fica por integrar (sem agregador escolhido, tal como o SMS — Fase 4); os eventos ficam prontos a enviar por qualquer canal assim que um agregador for contratado.
 
 ## Fase 13 — Testes end-to-end
 

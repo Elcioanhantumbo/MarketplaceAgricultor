@@ -55,4 +55,11 @@ class OrderPolicy
     {
         return $order->buyer_id === $user->id || $order->producer->user_id === $user->id;
     }
+
+    /** RN13 — só participantes de uma transacção concluída podem avaliar-se. */
+    public function review(User $user, Order $order): bool
+    {
+        return $order->status === 'concluido'
+            && ($order->buyer_id === $user->id || $order->producer->user_id === $user->id);
+    }
 }
