@@ -9,36 +9,41 @@
         : ($isProducer ? route('pedidos-recebidos') : route('meus-pedidos'));
 @endphp
 
-    <a href="{{ $backRoute }}" wire:navigate class="text-sm text-green-700 hover:underline">&larr; Voltar aos pedidos</a>
+    <a href="{{ $backRoute }}" wire:navigate class="inline-flex items-center gap-1 text-sm font-medium text-green-700 hover:underline">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
+        Voltar aos pedidos
+    </a>
 
     <div class="mt-4 flex items-center justify-between">
-        <h1 class="text-lg font-semibold">Pedido #{{ $order->id }}</h1>
+        <h1 class="text-xl font-semibold text-stone-900">Pedido #{{ $order->id }}</h1>
         <x-order-status-badge :status="$order->status" class="text-sm" />
     </div>
 
-    @error('action') <p class="mt-2 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{{ $message }}</p> @enderror
+    @error('action')
+        <x-ui.alert type="error" class="mt-3">{{ $message }}</x-ui.alert>
+    @enderror
 
-    <div class="mt-4 rounded border border-stone-200 p-6">
+    <x-ui.card class="mt-4">
         <dl class="grid grid-cols-2 gap-4 text-sm">
             <div>
                 <dt class="text-stone-500">Produto</dt>
-                <dd class="font-medium">{{ $item->productListing->product->name }}</dd>
+                <dd class="mt-0.5 font-medium text-stone-900">{{ $item->productListing->product->name }}</dd>
             </div>
             <div>
                 <dt class="text-stone-500">Quantidade</dt>
-                <dd class="font-medium">{{ $item->quantity }} {{ $item->productListing->unit }}</dd>
+                <dd class="mt-0.5 font-medium text-stone-900">{{ $item->quantity }} {{ $item->productListing->unit }}</dd>
             </div>
             <div>
                 <dt class="text-stone-500">Comprador</dt>
-                <dd class="font-medium">{{ $order->buyer->name }}</dd>
+                <dd class="mt-0.5 font-medium text-stone-900">{{ $order->buyer->name }}</dd>
             </div>
             <div>
                 <dt class="text-stone-500">Produtor</dt>
-                <dd class="font-medium">{{ $order->producer->business_name ?: $order->producer->user->name }}</dd>
+                <dd class="mt-0.5 font-medium text-stone-900">{{ $order->producer->business_name ?: $order->producer->user->name }}</dd>
             </div>
             <div>
                 <dt class="text-stone-500">Entrega</dt>
-                <dd class="font-medium">{{ match ($order->delivery_method) {
+                <dd class="mt-0.5 font-medium text-stone-900">{{ match ($order->delivery_method) {
                     'comprador_levanta' => 'Comprador levanta',
                     'produtor_entrega' => 'Produtor entrega',
                     'transporte_intermediado' => 'Transporte pela plataforma',
@@ -46,10 +51,10 @@
             </div>
             <div>
                 <dt class="text-stone-500">Total</dt>
-                <dd class="font-medium">{{ number_format((float) $order->total_amount, 2) }} MZN</dd>
+                <dd class="mt-0.5 font-medium text-stone-900">{{ number_format((float) $order->total_amount, 2) }} MZN</dd>
             </div>
         </dl>
-    </div>
+    </x-ui.card>
 
     @if ($order->delivery)
         @php
@@ -58,132 +63,125 @@
                 'em_transito' => 'Em trânsito', 'entregue' => 'Entregue', 'confirmada' => 'Confirmada',
             ];
         @endphp
-        <div class="mt-4 rounded border border-stone-200 p-6">
-            <h2 class="text-sm font-medium text-stone-500">Entrega (transporte intermediado)</h2>
-            <dl class="mt-2 grid grid-cols-2 gap-4 text-sm">
+        <x-ui.card class="mt-4" title="Entrega (transporte intermediado)">
+            <dl class="grid grid-cols-2 gap-4 text-sm">
                 <div>
                     <dt class="text-stone-500">Estado</dt>
-                    <dd class="font-medium">{{ $deliveryLabels[$order->delivery->status] }}</dd>
+                    <dd class="mt-0.5 font-medium text-stone-900">{{ $deliveryLabels[$order->delivery->status] }}</dd>
                 </div>
                 <div>
                     <dt class="text-stone-500">Transportador</dt>
-                    <dd class="font-medium">{{ $order->delivery->transporter?->user->name ?? $order->delivery->transporter_contact ?? 'Por atribuir' }}</dd>
+                    <dd class="mt-0.5 font-medium text-stone-900">{{ $order->delivery->transporter?->user->name ?? $order->delivery->transporter_contact ?? 'Por atribuir' }}</dd>
                 </div>
                 <div>
                     <dt class="text-stone-500">Custo do transporte</dt>
-                    <dd class="font-medium">{{ $order->delivery->cost !== null ? number_format((float) $order->delivery->cost, 2) . ' MZN' : 'Por definir' }}</dd>
+                    <dd class="mt-0.5 font-medium text-stone-900">{{ $order->delivery->cost !== null ? number_format((float) $order->delivery->cost, 2) . ' MZN' : 'Por definir' }}</dd>
                 </div>
                 <div>
                     <dt class="text-stone-500">Recolha prevista</dt>
-                    <dd class="font-medium">{{ $order->delivery->pickup_at?->format('d/m/Y H:i') ?? 'Por agendar' }}</dd>
+                    <dd class="mt-0.5 font-medium text-stone-900">{{ $order->delivery->pickup_at?->format('d/m/Y H:i') ?? 'Por agendar' }}</dd>
                 </div>
             </dl>
-        </div>
+        </x-ui.card>
     @endif
 
     @php $payment = $order->payments->first(); @endphp
     @if (! in_array($order->status, ['pendente', 'rejeitado', 'cancelado']))
-        <div class="mt-4 rounded border border-stone-200 p-6">
-            <h2 class="text-sm font-medium text-stone-500">Pagamento</h2>
-
+        <x-ui.card class="mt-4" title="Pagamento">
             @if ($payment)
-                <dl class="mt-2 grid grid-cols-2 gap-4 text-sm">
+                <dl class="grid grid-cols-2 gap-4 text-sm">
                     <div>
                         <dt class="text-stone-500">Estado</dt>
-                        <dd class="font-medium">{{ ucfirst($payment->status) }}</dd>
+                        <dd class="mt-0.5 font-medium text-stone-900">{{ ucfirst($payment->status) }}</dd>
                     </div>
                     <div>
                         <dt class="text-stone-500">Método</dt>
-                        <dd class="font-medium">{{ strtoupper($payment->method) }}</dd>
+                        <dd class="mt-0.5 font-medium text-stone-900">{{ strtoupper($payment->method) }}</dd>
                     </div>
                     <div>
                         <dt class="text-stone-500">Valor</dt>
-                        <dd class="font-medium">{{ number_format((float) $payment->amount, 2) }} MZN</dd>
+                        <dd class="mt-0.5 font-medium text-stone-900">{{ number_format((float) $payment->amount, 2) }} MZN</dd>
                     </div>
                     <div>
                         <dt class="text-stone-500">Referência</dt>
-                        <dd class="font-medium">{{ $payment->provider_reference ?: '—' }}</dd>
+                        <dd class="mt-0.5 font-medium text-stone-900">{{ $payment->provider_reference ?: '—' }}</dd>
                     </div>
                 </dl>
             @else
-                <p class="mt-1 text-sm text-stone-500">
+                <p class="text-sm text-stone-500">
                     Combine o pagamento directamente ({{ number_format((float) $order->total_amount, 2) }} MZN) e registe-o aqui.
                 </p>
                 <form wire:submit="registerPayment" class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                    <div>
-                        <label class="block text-xs font-medium text-stone-500">Método</label>
-                        <select wire:model="payment_method" class="mt-1 w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
+                    <x-ui.field name="payment_method" label="Método">
+                        <x-ui.select name="payment_method" wire:model="payment_method" class="text-sm">
                             <option value="mpesa">M-Pesa</option>
                             <option value="emola">e-Mola</option>
                             <option value="mkesh">mKesh</option>
                             <option value="transferencia">Transferência bancária</option>
                             <option value="dinheiro">Dinheiro</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium text-stone-500">Referência (opcional)</label>
-                        <input wire:model="payment_reference" type="text" class="mt-1 w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
-                        @error('payment_reference') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                    </div>
+                        </x-ui.select>
+                    </x-ui.field>
+                    <x-ui.field name="payment_reference" label="Referência" hint="Opcional.">
+                        <x-ui.input name="payment_reference" wire:model="payment_reference" type="text" class="text-sm" />
+                    </x-ui.field>
                     <div class="flex items-end">
-                        <button type="submit" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Registar pagamento</button>
+                        <x-ui.button type="submit" class="w-full sm:w-auto">Registar pagamento</x-ui.button>
                     </div>
                 </form>
             @endif
-        </div>
+        </x-ui.card>
     @endif
 
     @if ($isProducer && $order->transaction)
-        <div class="mt-4 rounded border border-stone-200 p-6">
-            <h2 class="text-sm font-medium text-stone-500">Comissão da plataforma</h2>
-            <dl class="mt-2 grid grid-cols-2 gap-4 text-sm">
+        <x-ui.card class="mt-4" title="Comissão da plataforma">
+            <dl class="grid grid-cols-2 gap-4 text-sm">
                 <div>
                     <dt class="text-stone-500">Comissão ({{ rtrim(rtrim(number_format($order->transaction->commission_percent, 2), '0'), '.') }}%)</dt>
-                    <dd class="font-medium">{{ number_format((float) $order->transaction->commission_amount, 2) }} MZN</dd>
+                    <dd class="mt-0.5 font-medium text-stone-900">{{ number_format((float) $order->transaction->commission_amount, 2) }} MZN</dd>
                 </div>
                 <div>
                     <dt class="text-stone-500">Valor líquido a receber</dt>
-                    <dd class="font-medium">{{ number_format((float) $order->transaction->amount - (float) $order->transaction->commission_amount, 2) }} MZN</dd>
+                    <dd class="mt-0.5 font-medium text-stone-900">{{ number_format((float) $order->transaction->amount - (float) $order->transaction->commission_amount, 2) }} MZN</dd>
                 </div>
             </dl>
-        </div>
+        </x-ui.card>
     @endif
 
-    <div class="mt-4 flex flex-wrap gap-2">
+    <div class="mt-5 flex flex-wrap gap-2">
         @if ($isProducer && $order->status === 'pendente')
-            <button wire:click="accept" wire:confirm="Aceitar este pedido? A quantidade será reservada." class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Aceitar</button>
-            <button wire:click="reject" wire:confirm="Rejeitar este pedido?" class="rounded border border-stone-300 px-4 py-2 text-sm hover:border-red-500 hover:text-red-600">Rejeitar</button>
+            <x-ui.button wire:click="accept" wire:confirm="Aceitar este pedido? A quantidade será reservada.">Aceitar</x-ui.button>
+            <x-ui.button variant="danger" wire:click="reject" wire:confirm="Rejeitar este pedido?">Rejeitar</x-ui.button>
         @endif
 
         @if ($isProducer && $order->status === 'aceite')
-            <button wire:click="advance('em_preparacao')" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Iniciar preparação</button>
+            <x-ui.button wire:click="advance('em_preparacao')">Iniciar preparação</x-ui.button>
         @endif
         @if ($isProducer && $order->status === 'em_preparacao')
-            <button wire:click="advance('pronto')" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Marcar pronto</button>
+            <x-ui.button wire:click="advance('pronto')">Marcar pronto</x-ui.button>
         @endif
         @if ($isProducer && $order->status === 'pronto')
-            <button wire:click="advance('em_transporte')" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Marcar em transporte</button>
+            <x-ui.button wire:click="advance('em_transporte')">Marcar em transporte</x-ui.button>
         @endif
         @if ($isProducer && $order->status === 'em_transporte')
-            <button wire:click="advance('entregue')" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Marcar entregue</button>
+            <x-ui.button wire:click="advance('entregue')">Marcar entregue</x-ui.button>
         @endif
 
         @if ($isBuyer && in_array($order->status, ['pendente', 'aceite']))
-            <button wire:click="cancel" wire:confirm="Cancelar este pedido?" class="rounded border border-stone-300 px-4 py-2 text-sm hover:border-red-500 hover:text-red-600">Cancelar pedido</button>
+            <x-ui.button variant="danger" wire:click="cancel" wire:confirm="Cancelar este pedido?">Cancelar pedido</x-ui.button>
         @endif
         @if ($isBuyer && $order->status === 'entregue' && (! $order->delivery || $order->delivery->status === 'entregue'))
-            <button wire:click="confirmDelivery" wire:confirm="Confirmar que recebeu a encomenda?" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Confirmar recepção</button>
+            <x-ui.button wire:click="confirmDelivery" wire:confirm="Confirmar que recebeu a encomenda?">Confirmar recepção</x-ui.button>
         @endif
     </div>
 
-    <div class="mt-8">
-        <h2 class="mb-2 text-sm font-medium text-stone-500">Histórico</h2>
-        <ul class="space-y-1 text-sm text-stone-600">
+    <div class="mt-10">
+        <h2 class="mb-3 text-sm font-semibold text-stone-900">Histórico</h2>
+        <ul class="space-y-2 border-l-2 border-stone-100 pl-4 text-sm text-stone-600">
             @foreach ($order->statusHistory as $entry)
-                <li>
-                    {{ $entry->changed_at->format('d/m/Y H:i') }} —
+                <li class="relative before:absolute before:top-1.5 before:-left-[1.1875rem] before:h-2 before:w-2 before:rounded-full before:bg-stone-300">
+                    <span class="text-stone-400">{{ $entry->changed_at->format('d/m/Y H:i') }}</span> —
                     {{ $entry->from_status ? ucfirst($entry->from_status) . ' → ' : '' }}{{ ucfirst($entry->to_status) }}
-                    ({{ $entry->changedBy?->name ?? 'sistema' }})
+                    <span class="text-stone-400">({{ $entry->changedBy?->name ?? 'sistema' }})</span>
                 </li>
             @endforeach
         </ul>
@@ -197,12 +195,12 @@
             ];
         @endphp
         <div class="mt-8">
-            <h2 class="mb-2 text-sm font-medium text-stone-500">Disputas</h2>
+            <h2 class="mb-3 text-sm font-semibold text-stone-900">Disputas</h2>
 
             @foreach ($order->complaints as $complaint)
-                <div class="mb-2 rounded border border-stone-200 p-3 text-sm">
+                <div class="mb-2 rounded-xl border border-stone-200 bg-white p-4 text-sm shadow-sm">
                     <div class="flex items-center justify-between">
-                        <span class="font-medium">{{ $complaintLabels[$complaint->status] }}</span>
+                        <span class="font-medium text-stone-900">{{ $complaintLabels[$complaint->status] }}</span>
                         <span class="text-xs text-stone-400">{{ $complaint->created_at->format('d/m/Y') }}</span>
                     </div>
                     <p class="mt-1 text-stone-600">{{ $complaint->description }}</p>
@@ -213,10 +211,11 @@
             @endforeach
 
             @if (($isBuyer || $isProducer) && in_array($order->status, ['entregue', 'concluido']))
-                <form wire:submit="reportComplaint" class="mt-2 space-y-2">
-                    <textarea wire:model="complaint_description" rows="3" placeholder="Descreva o problema…" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600"></textarea>
-                    @error('complaint_description') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
-                    <button type="submit" class="rounded border border-stone-300 px-4 py-2 text-sm hover:border-red-500 hover:text-red-600">Reportar problema</button>
+                <form wire:submit="reportComplaint" class="mt-3 space-y-2">
+                    <x-ui.field name="complaint_description">
+                        <x-ui.textarea name="complaint_description" wire:model="complaint_description" rows="3" placeholder="Descreva o problema…" />
+                    </x-ui.field>
+                    <x-ui.button type="submit" variant="danger">Reportar problema</x-ui.button>
                 </form>
             @endif
         </div>
@@ -224,12 +223,12 @@
 
     @if ($order->status === 'concluido')
         <div class="mt-8">
-            <h2 class="mb-2 text-sm font-medium text-stone-500">Avaliações</h2>
+            <h2 class="mb-3 text-sm font-semibold text-stone-900">Avaliações</h2>
 
             @forelse ($order->reviews as $review)
-                <div class="mb-2 rounded border border-stone-200 p-3 text-sm">
+                <div class="mb-2 rounded-xl border border-stone-200 bg-white p-4 text-sm shadow-sm">
                     <div class="flex items-center justify-between">
-                        <span class="font-medium">{{ $review->reviewer->name }}</span>
+                        <span class="font-medium text-stone-900">{{ $review->reviewer->name }}</span>
                         <span class="text-amber-500">{{ str_repeat('★', $review->rating) }}{{ str_repeat('☆', 5 - $review->rating) }}</span>
                     </div>
                     @if ($review->comment)
@@ -237,25 +236,25 @@
                     @endif
                 </div>
             @empty
-                <p class="text-sm text-stone-500">Ainda sem avaliações.</p>
+                <x-ui.empty-state title="Ainda sem avaliações" />
             @endforelse
 
             @if (($isBuyer || $isProducer) && ! $order->reviews->contains('reviewer_id', auth()->id()))
-                <form wire:submit="submitReview" class="mt-3 space-y-2 rounded border border-stone-200 p-3">
-                    <label class="block text-xs font-medium text-stone-500">
-                        A sua avaliação de {{ $isBuyer ? ($order->producer->business_name ?: $order->producer->user->name) : $order->buyer->name }}
-                    </label>
-                    <select wire:model="review_rating" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
-                        <option value="5">★★★★★ Excelente</option>
-                        <option value="4">★★★★☆ Muito bom</option>
-                        <option value="3">★★★☆☆ Razoável</option>
-                        <option value="2">★★☆☆☆ Fraco</option>
-                        <option value="1">★☆☆☆☆ Mau</option>
-                    </select>
-                    <textarea wire:model="review_comment" rows="2" placeholder="Comentário (opcional)…" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600"></textarea>
-                    @error('review_comment') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
-                    <button type="submit" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Enviar avaliação</button>
-                </form>
+                <x-ui.card class="mt-3" :title="'A sua avaliação de '.($isBuyer ? ($order->producer->business_name ?: $order->producer->user->name) : $order->buyer->name)">
+                    <form wire:submit="submitReview" class="space-y-3">
+                        <x-ui.select name="review_rating" wire:model="review_rating" class="text-sm">
+                            <option value="5">★★★★★ Excelente</option>
+                            <option value="4">★★★★☆ Muito bom</option>
+                            <option value="3">★★★☆☆ Razoável</option>
+                            <option value="2">★★☆☆☆ Fraco</option>
+                            <option value="1">★☆☆☆☆ Mau</option>
+                        </x-ui.select>
+                        <x-ui.field name="review_comment">
+                            <x-ui.textarea name="review_comment" wire:model="review_comment" rows="2" placeholder="Comentário (opcional)…" />
+                        </x-ui.field>
+                        <x-ui.button type="submit">Enviar avaliação</x-ui.button>
+                    </form>
+                </x-ui.card>
             @endif
         </div>
     @endif

@@ -1,8 +1,8 @@
 <div>
-    <h1 class="mb-1 text-lg font-semibold">Pedidos</h1>
+    <x-ui.page-header title="Pedidos" />
     <x-admin-nav />
 
-    <select wire:model.live="status" class="mb-4 rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
+    <x-ui.select wire:model.live="status" class="mb-4 max-w-xs text-sm">
         <option value="">Todos os estados</option>
         <option value="pendente">Pendente</option>
         <option value="aceite">Aceite</option>
@@ -13,18 +13,20 @@
         <option value="concluido">Concluído</option>
         <option value="rejeitado">Rejeitado</option>
         <option value="cancelado">Cancelado</option>
-    </select>
+    </x-ui.select>
 
     <div class="space-y-2">
-        @foreach ($orders as $order)
-            <a href="{{ route('pedidos.show', $order) }}" wire:navigate class="flex items-center justify-between rounded border border-stone-200 p-3 text-sm hover:border-green-600">
-                <span>
-                    #{{ $order->id }} — {{ $order->items->first()?->productListing?->product?->name }}
+        @forelse ($orders as $order)
+            <a href="{{ route('pedidos.show', $order) }}" wire:navigate class="flex items-center justify-between rounded-xl border border-stone-200 bg-white p-4 text-sm shadow-sm transition hover:border-green-600 hover:shadow-md">
+                <span class="text-stone-700">
+                    <span class="font-medium text-stone-900">#{{ $order->id }} — {{ $order->items->first()?->productListing?->product?->name }}</span>
                     · {{ $order->buyer->name }} → {{ $order->producer->user->name }}
                 </span>
                 <x-order-status-badge :status="$order->status" />
             </a>
-        @endforeach
+        @empty
+            <x-ui.empty-state title="Nenhum pedido encontrado" />
+        @endforelse
     </div>
 
     <div class="mt-4">{{ $orders->links() }}</div>

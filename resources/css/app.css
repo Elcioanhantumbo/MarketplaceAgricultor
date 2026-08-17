@@ -7,3 +7,25 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/*
+ * O design é só em modo claro. Sem isto, browsers com o sistema operativo em
+ * modo escuro pintam os campos nativos (input/select/textarea) com fundo
+ * escuro por omissão do próprio browser — como o texto continua herdado a
+ * escuro, o campo fica ilegível ("texto invisível"). Isto fixa a renderização
+ * dos controlos nativos a claro, independentemente do tema do sistema.
+ */
+:root {
+    color-scheme: light;
+}
+
+/* Chrome/Edge preenchem inputs com amarelo e escurecem o texto no autofill;
+   isto mantém o fundo branco do nosso design em vez do amarelo do browser. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-stone-900);
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    box-shadow: 0 0 0 1000px white inset;
+    transition: background-color 9999s ease-in-out 0s;
+}

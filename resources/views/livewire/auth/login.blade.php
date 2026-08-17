@@ -1,25 +1,23 @@
 <div>
-    <h1 class="mb-6 text-lg font-semibold">Iniciar sessão</h1>
+    <h1 class="text-lg font-semibold text-stone-900">Iniciar sessão</h1>
+    <p class="mt-1 mb-6 text-sm text-stone-500">Entre com o telefone e a palavra-passe da sua conta.</p>
 
     <form wire:submit="login" class="space-y-4">
-        <div>
-            <label class="block text-sm font-medium" for="phone">Telefone</label>
-            <input wire:model="phone" id="phone" type="tel" placeholder="84 123 4567" class="mt-1 w-full rounded border-stone-300 focus:border-green-600 focus:ring-green-600">
-            @error('phone') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-        </div>
+        <x-ui.field name="phone" label="Telefone" required>
+            <x-ui.input name="phone" wire:model="phone" type="tel" inputmode="tel" placeholder="84 123 4567" autofocus />
+        </x-ui.field>
 
-        <div>
-            <label class="block text-sm font-medium" for="password">Palavra-passe</label>
-            <input wire:model="password" id="password" type="password" class="mt-1 w-full rounded border-stone-300 focus:border-green-600 focus:ring-green-600">
-            @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
-        </div>
+        <x-ui.field name="password" label="Palavra-passe" required>
+            <x-ui.input name="password" wire:model="password" type="password" />
+        </x-ui.field>
 
-        <button type="submit" class="w-full rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800" wire:loading.attr="disabled">
-            Entrar
-        </button>
+        <x-ui.button type="submit" class="w-full" wire:loading.attr="disabled">
+            <span wire:loading.remove wire:target="login">Entrar</span>
+            <span wire:loading wire:target="login">A entrar…</span>
+        </x-ui.button>
     </form>
 
-    <p class="mt-4 text-center text-sm text-stone-500">
-        Ainda não tem conta? <a href="{{ route('registo') }}" class="text-green-700 hover:underline" wire:navigate>Criar conta</a>
+    <p class="mt-6 text-center text-sm text-stone-500">
+        Ainda não tem conta? <a href="{{ route('registo') }}" class="font-medium text-green-700 hover:underline" wire:navigate>Criar conta</a>
     </p>
 </div>

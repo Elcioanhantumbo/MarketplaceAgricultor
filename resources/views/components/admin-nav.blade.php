@@ -11,10 +11,10 @@
     ];
 @endphp
 
-<nav class="mb-6 flex flex-wrap gap-2 border-b border-stone-200 pb-4 text-sm">
+<nav class="mb-6 -mx-1 flex flex-wrap gap-1 overflow-x-auto border-b border-stone-200 pb-3 text-sm">
     @foreach ($links as $name => $link)
         <a href="{{ route($link['route']) }}" wire:navigate
-           class="rounded px-3 py-1.5 {{ request()->routeIs($link['route']) ? 'bg-green-700 text-white' : 'text-stone-600 hover:bg-stone-100' }}">
+           class="shrink-0 rounded-lg px-3 py-1.5 font-medium transition {{ request()->routeIs($link['route']) ? 'bg-green-700 text-white shadow-sm' : 'text-stone-600 hover:bg-stone-100' }}">
             {{ $link['label'] }}
         </a>
     @endforeach

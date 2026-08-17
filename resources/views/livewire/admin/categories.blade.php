@@ -1,41 +1,50 @@
 <div>
-    <h1 class="mb-1 text-lg font-semibold">Categorias e produtos</h1>
+    <x-ui.page-header title="Categorias e produtos" />
     <x-admin-nav />
 
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <form wire:submit="addCategory" class="space-y-3 rounded border border-stone-200 p-4">
-            <p class="text-sm font-medium">Nova categoria</p>
-            <input wire:model="category_name" type="text" placeholder="Nome" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
-            @error('category_name') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
-            <button type="submit" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Adicionar categoria</button>
-        </form>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <x-ui.card title="Nova categoria">
+            <form wire:submit="addCategory" class="space-y-3">
+                <x-ui.field name="category_name">
+                    <x-ui.input name="category_name" wire:model="category_name" type="text" placeholder="Nome" class="text-sm" />
+                </x-ui.field>
+                <x-ui.button type="submit" size="sm">Adicionar categoria</x-ui.button>
+            </form>
+        </x-ui.card>
 
-        <form wire:submit="addProduct" class="space-y-3 rounded border border-stone-200 p-4">
-            <p class="text-sm font-medium">Novo produto de referência</p>
-            <select wire:model="product_category_id" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
-                <option value="">— Categoria —</option>
-                @foreach ($this->categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
-            </select>
-            @error('product_category_id') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
-            <input wire:model="product_name" type="text" placeholder="Nome do produto" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
-            @error('product_name') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
-            <input wire:model="product_unit" type="text" placeholder="Unidade (ex.: kg)" class="w-full rounded border-stone-300 text-sm focus:border-green-600 focus:ring-green-600">
-            @error('product_unit') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
-            <button type="submit" class="rounded bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800">Adicionar produto</button>
-        </form>
+        <x-ui.card title="Novo produto de referência">
+            <form wire:submit="addProduct" class="space-y-3">
+                <x-ui.field name="product_category_id">
+                    <x-ui.select name="product_category_id" wire:model="product_category_id" class="text-sm">
+                        <option value="">— Categoria —</option>
+                        @foreach ($this->categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </x-ui.select>
+                </x-ui.field>
+                <x-ui.field name="product_name">
+                    <x-ui.input name="product_name" wire:model="product_name" type="text" placeholder="Nome do produto" class="text-sm" />
+                </x-ui.field>
+                <x-ui.field name="product_unit">
+                    <x-ui.input name="product_unit" wire:model="product_unit" type="text" placeholder="Unidade (ex.: kg)" class="text-sm" />
+                </x-ui.field>
+                <x-ui.button type="submit" size="sm">Adicionar produto</x-ui.button>
+            </form>
+        </x-ui.card>
     </div>
 
-    <div class="mt-6 space-y-4">
+    <div class="mt-8 space-y-6">
         @foreach ($this->categories as $category)
             <div>
-                <h2 class="font-medium text-green-700">{{ $category->name }}</h2>
-                <ul class="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                <h2 class="mb-2 flex items-center gap-2 text-sm font-semibold text-stone-900">
+                    <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
+                    {{ $category->name }}
+                </h2>
+                <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
                     @foreach ($category->products as $product)
-                        <li class="rounded border border-stone-200 px-3 py-2 text-sm">{{ $product->name }} <span class="text-stone-400">({{ $product->default_unit }})</span></li>
+                        <div class="rounded-lg border border-stone-200 bg-white px-3 py-2 text-sm text-stone-700">{{ $product->name }} <span class="text-stone-400">({{ $product->default_unit }})</span></div>
                     @endforeach
-                </ul>
+                </div>
             </div>
         @endforeach
     </div>
