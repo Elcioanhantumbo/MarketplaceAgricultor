@@ -18,7 +18,7 @@ Cada fase só arranca depois da anterior estar fechada e validada. O estado é a
 - [x] Ligação PostgreSQL configurada (`agrolink_mz`, utilizador dedicado `agrolink`).
 - [x] Ambiente `.env` configurado; filas, cache e sessões a usar o driver `database`.
 - [x] Livewire e Tailwind 4/Vite instalados; `npm run build` e `artisan serve` verificados a funcionar.
-- [ ] **PostGIS** — adiado: sem build Windows disponível para PostgreSQL 18 (versão muito recente) no momento da instalação. O modelo de dados da secção 18.1 já usa `latitude`/`longitude` simples nas migrations, pelo que a Fase 3 arranca sem PostGIS; a extensão pode ser activada mais tarde (Fase 6 — pesquisa geográfica) quando houver build disponível, sem alterar o esquema base.
+- [x] **PostGIS** — adiado nesta fase por não haver, na altura, build Windows para a versão do PostgreSQL instalada; o modelo de dados da secção 18.1 usa `latitude`/`longitude` simples nas migrations, pelo que a Fase 3 arrancou sem PostGIS. Activado mais tarde, quando passou a existir build disponível — ver nota "PostGIS" após a Fase 14.
 
 ## Fase 3 — Migrations, modelos e relacionamentos ✅
 
@@ -56,7 +56,7 @@ Tabelas da secção 18 do business plan, por ordem de dependência:
 - [x] CRUD de ofertas (`/minhas-ofertas`): criar/editar (enquanto `disponivel`) e encerrar; produto do catálogo, propriedade opcional (define localização), quantidade, unidade, preço e período de disponibilidade. Restrito a produtores prontos a publicar (RN02) e ao dono de cada oferta (`ProductListingPolicy` — RN14).
 - [x] RN17 — comando `app:expire-product-listings` marca como `expirado` as ofertas fora do período, agendado diariamente (`routes/console.php`); a pesquisa também exclui expiradas em tempo real (`scopeAvailable`).
 - [x] Pesquisa pública (`/ofertas`) com filtros por categoria, preço mín./máx., quantidade mín. e proximidade a uma das localizações-piloto (raio configurável).
-- [x] Proximidade calculada por fórmula de Haversine sobre `latitude`/`longitude` simples — substituto do PostGIS enquanto não há build para a versão do PostgreSQL instalada (ver Fase 2).
+- [x] Proximidade calculada por fórmula de Haversine sobre `latitude`/`longitude` simples nesta fase — substituto do PostGIS enquanto não havia build para a versão do PostgreSQL instalada (ver Fase 2). Migrado para PostGIS real depois de a Fase 14 fechar — ver nota "PostGIS" após a Fase 14.
 - [x] Detalhe público da oferta (`/ofertas/{listing}`) com dados do produtor (RN — "ver perfil do produtor", secção 11.2); pedido de compra fica para a Fase 7.
 - [x] Testes de funcionalidade: CRUD, autorização entre produtores, validação de quantidade (RN04), expiração automática e todos os filtros de pesquisa.
 
@@ -149,6 +149,17 @@ O lançamento em si (cadastrar manualmente os primeiros produtores/compradores/t
 - [x] `/up` (health-check nativo do Laravel) reforçado para também verificar a ligação à base de dados, pronto a ligar a um monitor externo com alertas — a secção 22 pede monitorização com alertas, que depende de um serviço externo escolhido pelo operador.
 - [x] Testes cobrindo rate limiting do login, o fluxo completo de 2FA administrativo (incluindo código errado e acesso negado a quem não é admin/operador) e a orquestração do comando de backup (geração, falha, purga de retenção).
 - [ ] O lançamento real — cadastro manual dos primeiros utilizadores, coordenação assistida de transporte, ajustes a partir de transacções reais — fica para quando o operador iniciar o piloto no terreno.
+
+## PostGIS — migração da pesquisa por proximidade ✅
+
+Adiado nas Fases 2/6 por não haver, na altura, build do PostGIS para a versão do PostgreSQL instalada no Windows. Passou a existir um instalador oficial (`postgis-bundle-pg18x64-setup-3.6.2-1.exe`, via <https://download.osgeo.org/postgis/windows/>), pelo que a pesquisa por proximidade foi migrada da fórmula de Haversine para PostGIS real:
+
+- [x] PostGIS 3.6.2 instalado e extensão activada (`CREATE EXTENSION postgis`, exige superutilizador) nas bases de dados de desenvolvimento e de testes.
+- [x] Migration `add_postgis_geography_columns` — acrescenta uma coluna `geography(Point,4326)` (`geo_location`) a `farms`, `product_listings` e `locations`, com índice GIST e backfill a partir das colunas `latitude`/`longitude` já existentes, que continuam a ser a fonte de verdade para exibição/edição.
+- [x] `App\Models\Concerns\HasGeoLocation` — trait partilhado pelos três modelos; mantém `geo_location` sincronizado automaticamente a cada `save()` sempre que `latitude`/`longitude` mudam, sem precisar de tocar nos componentes Livewire que já as definiam.
+- [x] `ProductListing::scopeNearby()` reescrito para `ST_DWithin`/`ST_Distance` sobre `geo_location`, em vez da expressão trigonométrica de Haversine — mesma assinatura, mesmo contrato (`distance_km` continua disponível), testes existentes inalterados.
+- [x] Verificado com pedidos HTTP reais contra `/ofertas`: oferta a 59,5 km de Dondo aparece com raio de 100 km e desaparece com raio de 50 km.
+- [x] `README.md` actualizado com os passos reais de instalação do PostGIS e configuração do `.env` (antes só tinha um comentário vago).
 
 ---
 

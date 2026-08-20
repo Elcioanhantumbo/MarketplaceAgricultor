@@ -7,7 +7,7 @@
             Ligar produtores agrícolas a compradores profissionais
         </h1>
         <p class="mx-auto mt-4 max-w-xl text-stone-600">
-            Publique ofertas, encontre fornecedores confiáveis, combine entrega e pagamento — tudo num só lugar,
+            Publique ofertas, encontre fornecedores confiáveis, combine entrega e pagamento tudo num só lugar,
             pensado para redes móveis lentas.
         </p>
 
@@ -31,7 +31,7 @@
             <h2 class="mt-3 font-semibold text-stone-900">Para produtores</h2>
             <p class="mt-1.5 text-sm text-stone-600">
                 Publique quantidade, preço e disponibilidade. Receba pedidos, aceite com reserva automática de stock
-                e combine a entrega — por levantamento, entrega própria ou transporte intermediado.
+                e combine a entrega por levantamento, entrega própria ou transporte intermediado.
             </p>
         </x-ui.card>
         <x-ui.card>
@@ -55,7 +55,6 @@
                 ['n' => '3', 'title' => 'Entregue e avalie', 'text' => 'Acompanhe a entrega e o pagamento até à conclusão, depois avaliem-se mutuamente.'],
             ] as $step)
                 <div class="rounded-xl border border-stone-200 bg-white p-5">
-                    <span class="flex h-7 w-7 items-center justify-center rounded-full bg-stone-900 text-xs font-semibold text-white">{{ $step['n'] }}</span>
                     <h3 class="mt-3 text-sm font-semibold text-stone-900">{{ $step['title'] }}</h3>
                     <p class="mt-1 text-sm text-stone-500">{{ $step['text'] }}</p>
                 </div>
